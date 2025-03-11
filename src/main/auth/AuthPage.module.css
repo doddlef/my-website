@@ -1,0 +1,19 @@
+.picture {
+    background-image: url("/background/light-background.jpg");
+    background-position: right;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    position: relative;
+    overflow: hidden;
+}
+
+.pictureText {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding: 1rem;
+    max-width: 40%;
+    border-radius: 0 0.75rem 0 0;
+    box-shadow: 1px -1px 1px whitesmoke;
+}

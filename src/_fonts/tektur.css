@@ -1,0 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Tektur:wght@400..900&display=swap');
+
+.tektur {
+     font-family: "Tektur", sans-serif;
+     font-style: normal;
+     font-variation-settings:
+             "wdth" 100;
+ }

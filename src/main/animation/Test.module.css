@@ -1,0 +1,10 @@
+.overlay {
+    width: 80%;
+    height: 80%;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    clip-path: circle(60% at 80% 100%);
+    box-shadow: 0 0 100px rebeccapurple;
+    background: url("/background/light-background.jpg") no-repeat center / contain;
+}

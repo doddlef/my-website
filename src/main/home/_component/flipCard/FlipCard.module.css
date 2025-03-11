@@ -1,0 +1,11 @@
+.wrapper {
+    width: 360px;
+    height: 360px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid black;
+    background-image: url("/landscape/great_wall.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: left;
+}
