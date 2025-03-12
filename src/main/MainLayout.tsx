@@ -13,8 +13,8 @@ export default function MainLayout() {
     return (
         <div className={clsx({"dark": mode === "dark"})}>
             <Routes>
+                <Route index element={<Home />} />
                 <Route path={"/auth"} element={<Auth />} />
-                <Route path={"/home"} element={<Home />} />
                 <Route path={"/study"} element={<Study />} />
             </Routes>
         </div>
