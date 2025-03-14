@@ -1,5 +1,10 @@
 import {useRef} from "react";
-import {useScroll, motion, useSpring, useTransform} from "motion/react";
+import {useScroll, motion, useTransform} from "motion/react";
+import IntroductionCard from "./_horizonCard/IntroductionCard";
+import MovingBackground from "../_component/horizonBackground/MovingBackground";
+import TechStackCard from "./_horizonCard/TechStackCard.tsx";
+import {styled} from "@mui/material/styles";
+import Box from "@mui/material/Box";
 
 export default function HorizonPage() {
     const wrapperRef = useRef(null);
@@ -8,27 +13,26 @@ export default function HorizonPage() {
         container: wrapperRef,
     })
 
-    const springX = useSpring(scrollYProgress, {
-        stiffness: 100,
-        damping: 30,
-        restDelta: 0.001,
-    })
-
-    const translateX = useTransform(springX, [0, 0.25, 0.75, 1], ['0', '-25%', '-50%', '-75%']);
+    const translateX = useTransform(
+        scrollYProgress,
+        [ 0, 0.15,   0.25,    0.4,    0.5,   0.65,   0.75],
+        ['0', '0', '-25%', '-25%', '-50%', '-50%', '-75%']
+    );
 
     return (
         <div ref={wrapperRef} className={"w-screen h-screen overflow-y-scroll overflow-x-hidden"}>
             <div className={"w-screen relative"} style={{height: "1000vh"}}>
                 <div className={"h-screen sticky top-0"}>
+                    <MovingBackground progress={scrollYProgress}/>
                     <motion.div
-                        className={"w-screen h-1 top-0 left-0 absolute bg-green-400 z-50"}
-                        style={{scaleX: springX, originX: 0}}
-                    />
-                    <motion.div className={" flex items-center w-fit z-10"} style={{translateX: translateX}}>
-                        <IntroductionCard />
-                        <div className={"w-screen h-screen bg-red-400"}/>
-                        <div className={"w-screen h-screen bg-blue-400"}/>
-                        <div className={"w-screen h-screen bg-yellow-400"}/>
+                        className={"absolute flex items-center w-fit z-20"}
+                        style={{translateX: translateX}}
+                        transition={{duration: 0.5}}
+                    >
+                        <IntroductionCard/>
+                        <TechStackCard/>
+                        <div className={"w-screen h-screen bg-blue-400 bg-opacity-30"}/>
+                        <div className={"w-screen h-screen bg-yellow-400 bg-opacity-30"}/>
                     </motion.div>
                 </div>
             </div>
@@ -36,10 +40,7 @@ export default function HorizonPage() {
     );
 }
 
-function IntroductionCard() {
-    return (
-        <div className={"w-screen h-screen"}>
-
-        </div>
-    );
-}
+export const CardPage = styled(Box)((() => ({
+    width: "100vw",
+    height: "100vh",
+})));

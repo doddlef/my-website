@@ -4,10 +4,10 @@ import Box from "@mui/material/Box";
 import {Avatar} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import {TypeAnimation} from "react-type-animation";
-import ThemeSwitch from "../../_component/ThemeSwitch.tsx";
 import IconButton from "@mui/material/IconButton";
 import EmailIcon from "@mui/icons-material/Email";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import AddCommentIcon from '@mui/icons-material/AddComment';
 
 export default function WelcomePage() {
     return (
@@ -163,8 +163,8 @@ function SelfIntroduction() {
                 }}
                 className={"flex gap-2 items-center justify-start mt-4"}
             >
-                <ThemeSwitch />
                 <IconButton><EmailIcon /></IconButton>
+                <IconButton><AddCommentIcon /></IconButton>
                 <IconButton><FavoriteIcon className={"text-red-400 dark:text-red-500"}/></IconButton>
             </motion.div>
         </Box>
