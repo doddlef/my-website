@@ -1,4 +1,5 @@
-import {CardPage, ContentTyp} from "../HorizonPage.tsx";
+import {CardPage} from "../HorizonPage.tsx";
+import {ContentTyp} from "../../_component/CustomType.tsx";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
@@ -10,7 +11,7 @@ import {motion} from "motion/react";
 export default function DailyCard() {
     return (
         <CardPage className={"flex justify-center items-center"}>
-            <Paper elevation={4} className={"p-4 max-w-4xl overflow-y-scroll md:overflow-hidden"}>
+            <Paper elevation={4} className={"p-4 max-w-sm md:max-w-4xl overflow-y-scroll"}>
                 <Grid container spacing={2}>
                     <Grid size={{sm: 12, md: 7}}>
                         <Stack spacing={1}>

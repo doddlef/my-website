@@ -1,4 +1,5 @@
-import {CardPage, ContentTyp, HeightContent} from "../HorizonPage.tsx";
+import {CardPage} from "../HorizonPage.tsx";
+import {ContentTyp, HeightContent} from "../../_component/CustomType.tsx";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
@@ -136,35 +137,37 @@ function MiddlePaper() {
 }
 
 function SmallPaper() {
-    const [expanded, setExpanded] = useState<string | boolean>(false);
+    const [expanded, setExpanded] = useState<string>(stacks[0].title);
 
     const handleChange = (panel: string) => {
-        setExpanded(panel === expanded ? false : panel);
+        setExpanded(panel);
     }
     return (
         <Paper elevation={4} className={"p-4 md:hidden max-w-sm flex justify-center items-center"}>
-            {
-                stacks.map((section) => (
-                    <Accordion
-                        key={section.title}
-                        expanded={expanded === section.title}
-                        onChange={() => handleChange(section.title)}
-                    >
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls={`${section.title}-panel-control`}
-                            id={`${section.title}-panel-control`}
+            <Stack spacing={1}>
+                {
+                    stacks.map((section) => (
+                        <Accordion
+                            key={section.title}
+                            expanded={expanded === section.title}
+                            onChange={() => handleChange(section.title)}
                         >
-                            <Typography variant={"h4"} color={"primary.main"}>
-                                {section.title}
-                            </Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            {section.content}
-                        </AccordionDetails>
-                    </Accordion>
-                ))
-            }
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls={`${section.title}-panel-control`}
+                                id={`${section.title}-panel-control`}
+                            >
+                                <Typography variant={"h6"} color={"primary.main"}>
+                                    {section.title}
+                                </Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                {section.content}
+                            </AccordionDetails>
+                        </Accordion>
+                    ))
+                }
+            </Stack>
         </Paper>
     );
 }

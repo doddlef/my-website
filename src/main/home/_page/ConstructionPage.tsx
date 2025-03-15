@@ -8,7 +8,7 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 export default function ConstructionPage() {
     return (
         <div className={"w-screen h-screen flex items-center justify-center"}>
-            <Paper elevation={4} className={"p-4"}>
+            <Paper elevation={4} className={"p-4 md:max-w-2xl max-w-sm"}>
                 <Stack spacing={2} alignItems={"center"}>
                     <ConstructionIcon sx={{color: "error.main", fontSize: 120}} />
                     <Typography variant={"h6"} fontFamily={"Sour gummy"}>
@@ -24,6 +24,12 @@ export default function ConstructionPage() {
                         <CheckBoxOutlineBlankIcon sx={{color: "error.main", fontSize: 45}} />
                         <Typography variant={"h6"} fontFamily={"Sour gummy"}>
                             A cloud driver
+                        </Typography>
+                    </Box>
+                    <Box className={"flex justify-start items-center gap-8 w-full pl-4"}>
+                        <CheckBoxOutlineBlankIcon sx={{color: "error.main", fontSize: 45}} />
+                        <Typography variant={"h6"} fontFamily={"Sour gummy"}>
+                            Project display
                         </Typography>
                     </Box>
                     <Box className={"flex justify-start items-center gap-8 w-full pl-4"}>

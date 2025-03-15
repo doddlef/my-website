@@ -27,7 +27,7 @@ export default function IntroductionCard() {
         <CardPage className={"flex justify-center items-center"}>
             <Paper
                 elevation={4}
-                className={"p-6 flex flex-col md:flex-row items-center justify-center gap-3"}
+                className={"p-6 flex items-center justify-center gap-4"}
                 component={motion.div}
                 initial={{
                     opacity: 0.1,
@@ -42,8 +42,8 @@ export default function IntroductionCard() {
                 }}
             >
                 <Stack
-                    spacing={1}
-                    sx={{maxWidth: {sm: "80%", md: "30rem"}}}
+                    spacing={3}
+                    className={"md:max-w-lg max-w-xs"}
                 >
                     <Typography variant={"h3"} sx={{color: "primary.main"}} fontFamily={"Sour Gummy"}>
                         Hi ! I'm Kevin Feng
@@ -64,7 +64,7 @@ export default function IntroductionCard() {
                 <Stack className={"h-full"} spacing={1}>
                     <motion.img
                         src={"melbourne_central.JPEG"} alt={""}
-                        className={"rounded"}
+                        className={"rounded  hidden md:block"}
                         style={{width: "25rem", height: "auto"}}
                         whileHover={{
                             boxShadow: "0 0 4px rgba(32, 32, 32, 0.6)"
@@ -72,6 +72,7 @@ export default function IntroductionCard() {
                     />
                     <Typography variant={"body2"}
                                 sx={{color: "text.secondary"}}
+                                className={"hidden md:block"}
                                 align={"center"}
                                 fontFamily={"Pacifico"}
                     >

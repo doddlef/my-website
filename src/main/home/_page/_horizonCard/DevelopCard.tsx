@@ -1,4 +1,5 @@
-import {CardPage, ContentTyp} from "../HorizonPage.tsx";
+import {CardPage} from "../HorizonPage.tsx";
+import {ContentTyp} from "../../_component/CustomType.tsx";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
@@ -26,7 +27,7 @@ export default function DevelopCard() {
                         Because of this, many of my personal projects end up abandoned midway.
                     </ContentTyp>
                 </Stack>
-                <div className={"flex flex-col items-center justify-center gap-4 max-w-lg"}>
+                <div className={"hidden md:flex flex-col items-center justify-center gap-4 max-w-lg"}>
                     <div className={"p-1 rounded bg-gray-400 hover:shadow-lg transition-shadow duration-500"}>
                         <img src={"/project/ezon_1.png"} alt={""}/>
                     </div>

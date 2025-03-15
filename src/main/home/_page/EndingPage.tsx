@@ -1,7 +1,7 @@
 import {ParallaxText} from "../_component/parallaxText/ParallaxText.tsx";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
-import {ContentTyp, HeightContent} from "./HorizonPage.tsx";
+import {ContentTyp, HeightContent} from "../_component/CustomType.tsx";
 import Divider from "@mui/material/Divider";
 import Box from "@mui/material/Box";
 import EmailIcon from '@mui/icons-material/Email';
@@ -23,14 +23,14 @@ export default function EndingPage() {
                     melbourne
                 </ParallaxText>
             </div>
-            <div className={"flex gap-6 items-center"}>
-                <Stack spacing={2} className={"max-w-lg"}>
+            <div className={"flex items-center md:flex-row md:gap-6 flex-col gap-3"}>
+                <Stack spacing={2} className={"md:max-w-lg max-w-sm"}>
                     <Typography variant={"h2"} color={"text.primary"} fontWeight={"bold"} fontFamily={"Sour gummy"}>
                         Contact me
                     </Typography>
                     <ContentTyp variant={"h6"}>
                         if you have any question, comment,
-                        or <HeightContent sx={{color: "primary.main"}}>maybe you want to heir me</HeightContent>
+                        or <HeightContent sx={{color: "primary.main"}}>maybe you want to hire me</HeightContent>
                         , or you just want to say 'hi !', please feel free to contact with me !
                     </ContentTyp>
                     <Divider />

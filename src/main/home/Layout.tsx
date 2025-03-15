@@ -68,7 +68,7 @@ export default function Layout() {
                 <ThemeSwitch />
             </header>
             {catalogue.map((section, index) => (
-                <div className={section.containClass ?? "snap-always snap-start"} key={index}>
+                <div className={section.containClass ?? "md:snap-always md:snap-start"} key={index}>
                     {section.node}
                 </div>
             ))}

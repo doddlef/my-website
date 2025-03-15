@@ -29,7 +29,7 @@ function BackgroundLayer(
 
     return (
         <motion.div
-            className={"absolute top-0 left-0 flex h-full"}
+            className={"absolute top-0 left-0 flex h-full w-fit"}
             style={{translateX, zIndex: 1}}
         >
             <img src={name} alt={name} className={"h-full w-auto"} style={{zIndex: index+1}}/>
