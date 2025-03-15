@@ -12,7 +12,7 @@ import {getEmail, prepareEmail} from "../../../_hooks/useEmail.ts";
 
 export default function EndingPage() {
     return (
-        <div className={"w-screen h-screen overflow-hidden bg-white dark:bg-dark-bg relative flex justify-center items-center"}>
+        <div className={"w-screen h-screen overflow-hidden relative flex justify-center items-center"}>
             <div className={"absolute top-8 left-0 w-full"}>
                 <ParallaxText speed={10}>
                     I wnat you
