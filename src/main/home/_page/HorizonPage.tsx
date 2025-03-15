@@ -1,10 +1,13 @@
 import {useRef} from "react";
 import {useScroll, motion, useTransform} from "motion/react";
-import IntroductionCard from "./_horizonCard/IntroductionCard";
 import MovingBackground from "../_component/horizonBackground/MovingBackground";
-import TechStackCard from "./_horizonCard/TechStackCard.tsx";
 import {styled} from "@mui/material/styles";
 import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import IntroductionCard from "./_horizonCard/IntroductionCard";
+import TechStackCard from "./_horizonCard/TechStackCard.tsx";
+import DevelopCard from "./_horizonCard/DevelopCard.tsx";
+import DailyCard from "./_horizonCard/DailyCard";
 
 export default function HorizonPage() {
     const wrapperRef = useRef(null);
@@ -29,10 +32,10 @@ export default function HorizonPage() {
                         style={{translateX: translateX}}
                         transition={{duration: 0.5}}
                     >
-                        <IntroductionCard/>
-                        <TechStackCard/>
-                        <div className={"w-screen h-screen bg-blue-400 bg-opacity-30"}/>
-                        <div className={"w-screen h-screen bg-yellow-400 bg-opacity-30"}/>
+                        <IntroductionCard />
+                        <DailyCard />
+                        <TechStackCard />
+                        <DevelopCard />
                     </motion.div>
                 </div>
             </div>
@@ -44,3 +47,15 @@ export const CardPage = styled(Box)((() => ({
     width: "100vw",
     height: "100vh",
 })));
+
+export const ContentTyp = styled((props) => <Typography component="span" {...props} />)(({theme}) => ({
+    variant: {sm: theme.typography.body2, md: theme.typography.body1},
+    fontFamily: "Sour gummy",
+    color: theme.palette.text.primary,
+})) as typeof Typography;
+
+export const HeightContent = styled((props) => <Typography component="span" {...props} />)(({theme}) => ({
+    color: theme.palette.success.main,
+    textDecorationLine: "underline",
+    display: "inline",
+})) as typeof Typography;

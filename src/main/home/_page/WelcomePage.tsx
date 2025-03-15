@@ -8,16 +8,19 @@ import IconButton from "@mui/material/IconButton";
 import EmailIcon from "@mui/icons-material/Email";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import AddCommentIcon from '@mui/icons-material/AddComment';
+import {prepareEmail} from "../../../_hooks/useEmail.ts";
 
 export default function WelcomePage() {
     return (
         <div className={"flex items-center w-screen h-screen p-4 relative"}>
-            <div className={"flex items-center justify-center w-1/2 h-full z-10"}>
-                <SelfIntroduction/>
+            <div className={"w-full md:w-1/2 flex items-center justify-center h-full z-10"}>
+                <SelfIntroduction />
             </div>
-            <div className={"flex items-center justify-center w-1/2 h-full z-10"}>
+
+            <div className={"hidden md:flex items-center justify-center w-1/2 h-full z-10"}>
                 <Clock />
             </div>
+
             <Background />
         </div>
     );
@@ -49,7 +52,7 @@ function FallBalls(
 {
     return (
         <div
-            className={"w-96 h-96 rounded-full absolute"}
+            className={"md:w-96 md:h-96 w-48 h-48 rounded-full absolute"}
             style={{
                 background: `radial-gradient(circle, ${color} 40%, transparent 90%)`,
                 filter: "blur(22px)",
@@ -106,25 +109,24 @@ function SelfIntroduction() {
                 <Typography variant={"h6"} color={"secondary.main"} fontFamily={"Sour Gummy"} gutterBottom>
                     study in University of Melbourne, focus on Computer Science
                 </Typography>
-                <TypeAnimation
-                    sequence={[
-                        '> Undergraduate Student',
-                        1000,
-                        '> Like e-game but Macbook',
-                        1000,
-                        '> Full stack developer ?',
-                        1000,
-                        '> Looking for internship',
-                        1000,
-                        '> Switch game recommend ?',
-                        1000,
-                    ]}
-                    cursor={false}
-                    repeat={Infinity}
-                    deletionSpeed={80}
-                    className={"text-slate-900 dark:text-gray-200 font-bold font-[Tektur]"}
-                    style={{fontSize: "1.8rem"}}
-                />
+                    <TypeAnimation
+                        sequence={[
+                            '> Undergraduate Student',
+                            1000,
+                            '> Like e-game but Macbook',
+                            1000,
+                            '> Full stack developer ?',
+                            1000,
+                            '> Looking for internship',
+                            1000,
+                            '> Switch game recommend ?',
+                            1000,
+                        ]}
+                        cursor={false}
+                        repeat={Infinity}
+                        deletionSpeed={80}
+                        className={"text-slate-900 dark:text-gray-200 font-bold font-[Tektur] text-xl md:text-2xl"}
+                    />
                 <Typography variant={"h6"} color={"success.light"} fontFamily={"Pacifico"}>
                     - focus on Java Spring + React.js
                 </Typography>
@@ -163,7 +165,7 @@ function SelfIntroduction() {
                 }}
                 className={"flex gap-2 items-center justify-start mt-4"}
             >
-                <IconButton><EmailIcon /></IconButton>
+                <IconButton onClick={() => prepareEmail({})}><EmailIcon /></IconButton>
                 <IconButton><AddCommentIcon /></IconButton>
                 <IconButton><FavoriteIcon className={"text-red-400 dark:text-red-500"}/></IconButton>
             </motion.div>

@@ -8,6 +8,8 @@ import {ReactNode, useRef} from "react";
 import {motion, useScroll, useSpring} from "motion/react";
 import ThemeSwitch from "../_component/ThemeSwitch.tsx";
 import Typography from "@mui/material/Typography";
+import EndingPage from "./_page/EndingPage.tsx";
+import ConstructionPage from "./_page/ConstructionPage.tsx";
 
 type Section = {
     node: ReactNode,
@@ -18,10 +20,9 @@ type Section = {
 const catalogue:Section[] = [
     {node:<WelcomePage/>, title:"Welcome"},
     {node:<HorizonPage/>, title:"About me"},
-    {node:<div className={"w-full h-screen bg-blue-400 snap-start"}/>, title: "test 1"},
-    {node:<div className={"w-full h-screen bg-red-400 snap-start"}/>, title: "test 2"},
-    {node:<div className={"w-full h-screen bg-green-400 snap-start"}/>, title: "test 3"},
-    {node:<div className={"w-full h-screen bg-yellow-400 snap-start"}/>, title: "test 4"},
+    {node:<ConstructionPage/>, title: "construction"},
+    // {node:<div className={"w-full h-screen bg-green-400 snap-start"}/>, title: "test 3"},
+    {node:<EndingPage />, title: "ending 1"},
 ]
 
 export default function Layout() {

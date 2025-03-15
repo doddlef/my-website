@@ -13,7 +13,7 @@ const introductions: { h: string, c: string }[] = [
     {
         h: "Study",
         c: "I find great joy in designing code and building software. During university, I focus on software design, " +
-            "but I’m also interested in mathematics, AI, machine learning, game design, and algorithms (challenging but fun!)."
+            "but I’m also interested in AI, machine learning, game design, and algorithms (challenging but fun!)."
     },
     {
         h: "Future",
@@ -27,7 +27,7 @@ export default function IntroductionCard() {
         <CardPage className={"flex justify-center items-center"}>
             <Paper
                 elevation={4}
-                className={"p-6 flex items-center justify-center gap-3"}
+                className={"p-6 flex flex-col md:flex-row items-center justify-center gap-3"}
                 component={motion.div}
                 initial={{
                     opacity: 0.1,
@@ -43,13 +43,13 @@ export default function IntroductionCard() {
             >
                 <Stack
                     spacing={1}
-                    sx={{maxWidth: "30rem"}}
+                    sx={{maxWidth: {sm: "80%", md: "30rem"}}}
                 >
                     <Typography variant={"h3"} sx={{color: "primary.main"}} fontFamily={"Sour Gummy"}>
                         Hi ! I'm Kevin Feng
                     </Typography>
                     {introductions.map((item, i) => (
-                        <>
+                        <div key={i}>
                             <Typography variant={"h5"} sx={{color: "secondary.main"}}
                                         key={`${i}_h`} fontFamily={"Sour Gummy"}>
                                 {item.h}
@@ -58,7 +58,7 @@ export default function IntroductionCard() {
                                         key={`${i}_c`} fontFamily={"Sour Gummy"}>
                                 {item.c}
                             </Typography>
-                        </>
+                        </div>
                     ))}
                 </Stack>
                 <Stack className={"h-full"} spacing={1}>
