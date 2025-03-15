@@ -4,79 +4,103 @@ import "../../_fonts/sour_gummy.css";
 import "../../_fonts/tektur.css";
 import WelcomePage from "./_page/WelcomePage.tsx";
 import HorizonPage from "./_page/HorizonPage.tsx";
-import {ReactNode, useRef} from "react";
-import {motion, useScroll, useSpring} from "motion/react";
+import {ReactNode, useEffect, useRef, useState} from "react";
+import {motion, useScroll, useSpring, useTransform} from "motion/react";
 import ThemeSwitch from "../_component/ThemeSwitch.tsx";
 import Typography from "@mui/material/Typography";
 import EndingPage from "./_page/EndingPage.tsx";
 import ConstructionPage from "./_page/ConstructionPage.tsx";
 
-type Section = {
-    node: ReactNode,
-    title: string,
-    containClass?: string,
-}
-
-const catalogue:Section[] = [
-    {node:<WelcomePage/>, title:"Welcome"},
-    {node:<HorizonPage/>, title:"About me"},
-    {node:<ConstructionPage/>, title: "construction"},
-    // {node:<div className={"w-full h-screen bg-green-400 snap-start"}/>, title: "test 3"},
-    {node:<EndingPage />, title: "ending 1"},
-]
-
 export default function Layout() {
-    const wrapperRef = useRef(null);
+    const wrapperRef = useRef<HTMLDivElement>(null);
+    const innerRef = useRef<HTMLDivElement>(null);
 
-    const {scrollYProgress} = useScroll({
+    const { scrollYProgress } = useScroll({
         container: wrapperRef,
-    })
+    });
 
     const scaleX = useSpring(scrollYProgress, {
         stiffness: 100,
         damping: 30,
-        restDelta: 0.001
-    })
+        restDelta: 0.001,
+    });
+
+    // Dynamic calculation of start and end
+    const [start, setStart] = useState(0);
+    const [end, setEnd] = useState(1);
+
+    useEffect(() => {
+        const updateScrollRange = () => {
+            if (wrapperRef.current && innerRef.current) {
+                const wrapper = wrapperRef.current;
+                const inner = innerRef.current;
+
+                const wrapperHeight = wrapper.scrollHeight;
+                const startOffset = inner.offsetTop;
+                const endOffset = startOffset + inner.offsetHeight;
+
+                setStart(startOffset / wrapperHeight);
+                setEnd(endOffset / wrapperHeight);
+            }
+        };
+
+        updateScrollRange();
+        window.addEventListener("resize", updateScrollRange);
+
+        return () => {
+            window.removeEventListener("resize", updateScrollRange);
+        };
+    }, []);
+
+    // Use dynamically calculated start and end
+    const xProgress = useTransform(scrollYProgress, [start, end], [0, 1]);
 
     return (
         <Box
             ref={wrapperRef}
             component={"main"}
-            className={"overflow-y-scroll overflow-x-hidden snap-mandatory snap-y w-screen h-screen relative"}
-            sx={{bgcolor: "background.default"}}
+            className={"overflow-y-scroll overflow-x-hidden w-screen h-screen relative snap-y snap-proximity"}
+            sx={{ bgcolor: "background.default" }}
         >
             <motion.div
                 className={"w-screen h-1 top-0 left-0 fixed bg-green-400 z-50"}
-                style={{scaleX, originX: 0}}
+                style={{ scaleX, originX: 0 }}
             />
             <header className={"w-screen fixed top-0 left-0 z-40 pt-2 pb-2 pr-4 flex items-center justify-end gap-2 bg-opacity-25 backdrop-blur-lg"}>
                 <HeaderButton onClick={() => alert("not implement yet!")} selected>
-                    <Typography variant={"h6"} sx={{color: "text.primary"}} fontFamily={"Sour gummy"}>
+                    <Typography variant={"h6"} sx={{ color: "text.primary" }} fontFamily={"Sour gummy"}>
                         home
                     </Typography>
                 </HeaderButton>
                 <HeaderButton onClick={() => alert("not implement yet!")}>
-                    <Typography variant={"h6"} sx={{color: "text.primary"}} fontFamily={"Sour gummy"}>
+                    <Typography variant={"h6"} sx={{ color: "text.primary" }} fontFamily={"Sour gummy"}>
                         blog
                     </Typography>
                 </HeaderButton>
                 <HeaderButton onClick={() => alert("not implement yet!")}>
-                    <Typography variant={"h6"} sx={{color: "text.primary"}} fontFamily={"Sour gummy"}>
+                    <Typography variant={"h6"} sx={{ color: "text.primary" }} fontFamily={"Sour gummy"}>
                         driver
                     </Typography>
                 </HeaderButton>
                 <ThemeSwitch />
             </header>
-            {catalogue.map((section, index) => (
-                <div className={section.containClass ?? "md:snap-always md:snap-start"} key={index}>
-                    {section.node}
-                </div>
-            ))}
+
+            <WelcomePage />
+            {/* Wrap the target section with a ref */}
+            <div ref={innerRef}>
+                <HorizonPage progress={xProgress} />
+            </div>
+            <div className={"snap-always snap-center"}>
+                <ConstructionPage />
+            </div>
+            <EndingPage />
         </Box>
     );
 }
 
-function HeaderButton({children, onClick, selected=false} : {children: ReactNode, onClick:() => void, selected?: boolean}) {
+function HeaderButton({children, onClick, selected = false}: {
+    children: ReactNode,
+    onClick: () => void, selected?: boolean}) {
     if (selected) {
         return (
             <div className={"pl-2 pr-6 pt-1 pb-1 rounded-l flex items-center gap-2"}>
