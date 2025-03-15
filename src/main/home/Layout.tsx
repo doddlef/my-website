@@ -49,7 +49,7 @@ export default function Layout() {
                 className={"w-screen h-1 top-0 left-0 fixed bg-green-400 z-50"}
                 style={{scaleX, originX: 0}}
             />
-            <header className={"w-screen fixed top-0 left-0 z-40 pt-2 pb-2 pr-4 flex items-center justify-end gap-2"}>
+            <header className={"w-screen fixed top-0 left-0 z-40 pt-2 pb-2 pr-4 flex items-center justify-end gap-2 bg-opacity-25 backdrop-blur-lg"}>
                 <HeaderButton onClick={() => alert("not implement yet!")} selected>
                     <Typography variant={"h6"} sx={{color: "text.primary"}} fontFamily={"Sour gummy"}>
                         home
