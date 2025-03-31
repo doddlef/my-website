@@ -10,7 +10,7 @@ export default function ThemeSwitch() {
 
     return (
         <IconButton onClick={() => setMode(isLight ? "dark" : "light")}>
-            {isLight ? <DarkModeIcon /> : <LightModeIcon /> }
+            {isLight ? <LightModeIcon /> : <DarkModeIcon /> }
         </IconButton>
     );
 }

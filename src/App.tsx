@@ -23,10 +23,7 @@ const theme = createTheme({
   typography: {
     fontFamily: [
       '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
       'Roboto',
-      '"Helvetica Neue"',
       'Sour gummy',
       'sans-serif',
       '"Apple Color Emoji"',
@@ -41,7 +38,7 @@ function App() {
   return (
       <ThemeProvider theme={theme}>
         <SnackbarProvider maxSnack={4}>
-          <AccountProvider autoLogin={false}>
+          <AccountProvider autoLogin={true}>
             <BrowserRouter>
               <MainLayout />
             </BrowserRouter>

@@ -4,8 +4,11 @@ import {clsx} from "clsx";
 import {lazy, useMemo} from "react";
 import {AnimatePresence} from "motion/react";
 import Transition from "../_component/transition/Transition.tsx";
+import Box from "@mui/material/Box";
 
 const Auth = lazy(() => import("./auth/AuthPage.tsx"));
+const Blog = lazy(() => import("./blog/Layout.tsx"));
+const Driver = lazy(() => import("./driver/Layout.tsx"));
 const Home = lazy(() => import("./home/Layout.tsx"));
 const Study = lazy(() => import("./animation/Layout.tsx"));
 
@@ -15,7 +18,7 @@ export default function MainLayout() {
     const location = useLocation();
 
     return (
-        <div className={clsx(isLight ? '' : 'dark')}>
+        <Box className={clsx(isLight ? '' : 'dark')} sx={{bgcolor: "background.default"}}>
             <AnimatePresence mode={"wait"}>
                 <Routes location={location} key={location.pathname}>
                     <Route index element={
@@ -23,18 +26,28 @@ export default function MainLayout() {
                             <Home />
                         </Transition>
                     } />
-                    <Route path={"/auth"} element={
+                    <Route path={"/auth/*"} element={
                         <Transition>
                             <Auth />
                         </Transition>
                     } />
-                    <Route path={"/study"} element={
+                    <Route path={"/study/*"} element={
                         <Transition>
                             <Study />
                         </Transition>
                     } />
+                    <Route path={"/blog/*"} element={
+                        <Transition>
+                            <Blog />
+                        </Transition>
+                    } />
+                    <Route path={"/driver/*"} element={
+                        <Transition>
+                            <Driver />
+                        </Transition>
+                    } />
                 </Routes>
             </AnimatePresence>
-        </div>
+        </Box>
     );
 }

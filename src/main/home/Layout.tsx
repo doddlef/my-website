@@ -78,7 +78,12 @@ export default function Layout() {
                     </Typography>
                 </HeaderButton>
                 <HeaderButton onClick={() => alert("not implement yet!")}>
-                    <Typography variant={"h6"} sx={{ color: "text.primary" }} fontFamily={"Sour gummy"}>
+                    <Typography
+                        component={"a"}
+                        href={"/driver"}
+                        variant={"h6"} sx={{ color: "text.primary" }}
+                        fontFamily={"Sour gummy"}
+                    >
                         driver
                     </Typography>
                 </HeaderButton>
