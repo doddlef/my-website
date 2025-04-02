@@ -7,7 +7,6 @@ import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
 import {ItemCard} from "../itemCard/ItemCard.tsx";
 import MainContextMenu from "../MainContextMenu/MainContextMenu.tsx";
-import {useUploadApi} from "../api/uploadApi2/UploadApiContext.ts";
 
 function ItemTable() {
     const { items } = useContentCache();
@@ -76,61 +75,9 @@ function ItemTable() {
                     </Grid>
                 )}
             </Grid>
-            <TestUpload />
             <MainContextMenu menuPosition={menuPosition} handleClose={handleClose} />
         </Box>
     );
-}
-
-function TestUpload() {
-    const { currentFolder } = useContentCache();
-    const { upload, tasks, running } = useUploadApi();
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files ? e.target.files[0] : null;
-        if (file) {
-            setSelectedFile(file);
-        }
-    };
-
-    const handleUpload = async () => {
-        if (selectedFile && currentFolder) {
-            try {
-                const n = getNameAndExtension(selectedFile);
-                await upload({ file: selectedFile, folder: currentFolder, ...n });
-            } catch (error) {
-                console.error(error);
-            }
-        } else {
-            alert("No file selected or current folder missing");
-        }
-    };
-
-    return (
-        <div>
-            <input
-                type="file"
-                onChange={handleFileChange}
-                accept="*/*"
-            />
-            <button onClick={handleUpload} disabled={!selectedFile}>
-                Upload File
-            </button>
-            <div>{running ? "running" : "idle"}</div>
-            <div className={"flex gap-2"}>
-                {tasks.map((task) => (
-                    <div key={task.id}>{task.name}: {task.status}: {task.progress}</div>
-                ))}
-            </div>
-        </div>
-    );
-}
-
-const getNameAndExtension = (file: File) => {
-    const i = file.name.lastIndexOf(".");
-    if (i < 0 ) return {name: file.name, extension: ''}
-    return {name: file.name.substring(0, i), extension: file.name.substring(i + 1)}
 }
 
 export default ItemTable;
