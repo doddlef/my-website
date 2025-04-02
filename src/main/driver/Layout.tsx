@@ -5,6 +5,8 @@ import {useAccount} from "../../_component/accountProvider/AccountContext.tsx";
 import {refreshableRequest} from "../../_lib/actions.ts";
 import {R} from "../../_lib/definitions.ts";
 import {DriverInfoContext} from "./_component/infoProvider/DriverInfoContext.ts";
+import StructureApiProvider from "./_component/api/structureApi/StructureApiProvider.tsx";
+import UploadApiProvider from "./_component/api/uploadApi2/UploadApiProvider.tsx";
 
 type DriverInfoResponse = R & {
     fields: {
@@ -41,7 +43,11 @@ export default function Layout() {
 
     return (
         <DriverInfoContext.Provider value={info}>
-            <Page />
+            <StructureApiProvider>
+                <UploadApiProvider>
+                    <Page />
+                </UploadApiProvider>
+            </StructureApiProvider>
         </DriverInfoContext.Provider>
     );
 }

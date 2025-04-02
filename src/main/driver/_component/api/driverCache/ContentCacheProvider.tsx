@@ -1,9 +1,10 @@
-import React, {useCallback, useRef} from "react";
-import { useDriverInfo } from "../infoProvider/DriverInfoContext.ts";
-import { R } from "../../../../_lib/definitions.ts";
-import { refreshableRequest } from "../../../../_lib/actions.ts";
-import { LabelCache } from "./LabelCache.ts";
-import {ItemLabel, ItemView} from "../../_lib/defitions.ts";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import { useDriverInfo } from "../../infoProvider/DriverInfoContext.ts";
+import { R } from "../../../../../_lib/definitions.ts";
+import { refreshableRequest } from "../../../../../_lib/actions.ts";
+import { ContentCache } from "./ContentCache.ts";
+import {ItemLabel, ItemView} from "../../../_lib/defitions.ts";
+import {useSearchParams} from "react-router-dom";
 
 type ItemApiResult = R & {
     fields: {
@@ -25,10 +26,15 @@ const contentApi = async (id: number): Promise<ContentApiResult> => {
     return await refreshableRequest(`/api/driver/children/${id}`, { method: "GET" }) as ContentApiResult;
 };
 
-const LabelCacheProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const ContentCacheProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { rootFolder } = useDriverInfo();
+    const [searchParams] = useSearchParams();
 
     const cache = useRef(new Map<number, ItemLabel>());
+    const [items, setItems] = useState<ItemView[]>([]);
+
+    const currentFolder = useMemo(() =>  Number(searchParams.get("folder")) || rootFolder,
+        [searchParams, rootFolder])
 
     const constructItemLabel = useCallback((item: ItemView): ItemLabel => (
         {
@@ -72,10 +78,19 @@ const LabelCacheProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             result.fields.list
                 .filter(item => item.fileType === "FOLDER")
                 .forEach(item => cache.current.set(item.id, constructItemLabel(item)));
-            return result.fields.list;
+            setItems(result.fields.list);
+        } else {
+            setItems([]);
         }
-        return [];
     }, [constructItemLabel]);
+
+    const refresh = useCallback(
+        () => getContent(currentFolder), [currentFolder, getContent]
+    );
+
+    useEffect(() => {
+        refresh();
+    }, [refresh]);
 
     const getPath = useCallback(async (id: number) => {
         const path: ItemLabel[] = [];
@@ -96,11 +111,15 @@ const LabelCacheProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         return path;
     }, [getLabel]);
 
+    const cachePut = useCallback((label: ItemLabel) => {
+        cache.current.set(label.id, label);
+    }, [])
+
     return (
-        <LabelCache.Provider value={{ getPath, getLabel, getItem, getContent, rootFolder }}>
+        <ContentCache.Provider value={{ getPath, getLabel, getItem, cachePut, refresh, items, currentFolder, rootFolder }}>
             {children}
-        </LabelCache.Provider>
+        </ContentCache.Provider>
     );
 };
 
-export default LabelCacheProvider;
+export default ContentCacheProvider;

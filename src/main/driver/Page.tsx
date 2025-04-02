@@ -10,7 +10,7 @@ import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import MainContent from "./(overview)/MainContent.tsx";
+import MainContent from "./(overview)/ContentPage.tsx";
 import Header from "./_component/header/Header.tsx";
 
 export default function Page() {
