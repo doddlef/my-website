@@ -5,12 +5,11 @@ import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
-import CatchingPokemonOutlinedIcon from '@mui/icons-material/CatchingPokemonOutlined';
 import Paper from "@mui/material/Paper";
 import {motion} from "motion/react";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-import {useUploadApi} from "../api/uploadApi2/UploadApiContext.ts";
+import {UploadHistory, useUploadApi} from "../api/uploadApi2/UploadApiContext.ts";
 import {styled} from "@mui/material/styles";
 import {CircularProgress, CircularProgressProps, Tooltip} from "@mui/material";
 import Divider from "@mui/material/Divider";
@@ -84,10 +83,11 @@ export default function UploadHelper() {
                     </IconButton>
                 </Box>
                 <Stack
-                    sx={{minHeight: LINE_HEIGHT, maxHeight: LINE_HEIGHT * 3}}
+                    sx={{minHeight: LINE_HEIGHT, maxHeight: LINE_HEIGHT * 4}}
                     className={"p-2 overflow-y-auto"}
                     spacing={1}
                     divider={<Divider />}
+                    direction={"column-reverse"}
                 >
                     {tasks.length === 0 ? (
                         <StyledLine>
@@ -97,7 +97,7 @@ export default function UploadHelper() {
                             </Typography>
                         </StyledLine>
                     ) : tasks.map((task) => (
-                        <StyledLine className={"justify-between"}>
+                        <StyledLine className={"justify-between"} key={task.id}>
                             <Box className={"max-w-80 overflow-hidden"}>
                                 <Tooltip
                                     title={task.name}
@@ -121,10 +121,7 @@ export default function UploadHelper() {
                                     </Typography>
                                 </div>
                             </Box>
-                            { task.progress >= 1
-                                ? <CatchingPokemonOutlinedIcon color={"success"} />
-                                : <CircularProgressWithLabel variant={"determinate"} value={task.progress * 100} />
-                            }
+                            <StatusIcon task={task} />
                         </StyledLine>
                     ))}
                 </Stack>
@@ -132,6 +129,25 @@ export default function UploadHelper() {
             <input type={"file"} className={"hidden"} ref={fileInputRef} onChange={handleFileChange} />
         </>
     );
+}
+
+import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
+import CatchingPokemonOutlinedIcon from '@mui/icons-material/CatchingPokemonOutlined';
+import HourglassTopOutlinedIcon from '@mui/icons-material/HourglassTopOutlined';
+
+function StatusIcon({task} : {task: UploadHistory}) {
+    switch(task.status) {
+        case "uploading":
+            return <CircularProgressWithLabel variant={"determinate"} value={task.progress * 100} />;
+        case "finished":
+            return <CatchingPokemonOutlinedIcon color={"success"} />;
+        case "waiting": case "preparing":
+            return <HourglassTopOutlinedIcon color={"primary"}/>
+        case "cancelled":
+            return <ErrorOutlineOutlinedIcon color={"primary"} />
+        default:
+            return <ErrorOutlineOutlinedIcon color={"error"} />
+    }
 }
 
 function CircularProgressWithLabel(

@@ -1,5 +1,5 @@
 import Page from "./Page.tsx";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {DriverInfo} from "./_lib/defitions.ts";
 import {useAccount} from "../../_component/accountProvider/AccountContext.tsx";
 import {refreshableRequest} from "../../_lib/actions.ts";
@@ -19,30 +19,30 @@ export default function Layout() {
     const { account, checked } = useAccount();
     const [mounted, setMounted] = useState<boolean>(false);
 
-    useEffect(() => {
-        const fetchInfo = async () => {
-            const result = await refreshableRequest("/api/driver/info", {
-                method: "GET",
-            }) as DriverInfoResponse;
+    const refreshInfo = useCallback(async () => {
+        const result = await refreshableRequest("/api/driver/info", {
+            method: "GET",
+        }) as DriverInfoResponse;
 
-            if (result.code === 0) {
-                setInfo(result.fields.info)
-            }
-
-            setMounted(true);
+        if (result.code === 0) {
+            setInfo(result.fields.info)
         }
+    }, [])
 
-        if(account && checked) fetchInfo();
-    }, [account, checked]);
+    useEffect(() => {
+        if(account && checked) {
+            refreshInfo().finally(() => setMounted(true));
+        }
+    }, [account, checked, refreshInfo]);
 
-    if (!mounted) return (
+    if (!mounted || !info) return (
         <div>
             Loading ...
         </div>
     )
 
     return (
-        <DriverInfoContext.Provider value={info}>
+        <DriverInfoContext.Provider value={{info, refreshInfo}}>
             <StructureApiProvider>
                 <UploadApiProvider>
                     <Page />

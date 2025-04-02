@@ -14,11 +14,14 @@ export type UploadHistory = {
     progress: number;
 }
 
+export type SuccessListener = (id: string, folder: number) => void;
+
 export type UploadApi = {
     upload: (request: UploadRequest) => Promise<void>;
     cancelTask: (taskId: string) => void;
     tasks: UploadHistory[];
     running: boolean;
+    onSuccess: (listener: SuccessListener) => void;
 };
 
 export const UploadApiContext = createContext<UploadApi | undefined>(undefined);

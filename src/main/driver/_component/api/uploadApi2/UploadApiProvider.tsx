@@ -1,8 +1,9 @@
 import {ReactNode, useCallback, useEffect, useRef, useState} from "react";
-import {UploadApiContext, UploadHistory, UploadRequest} from "./UploadApiContext.ts";
+import {SuccessListener, UploadApiContext, UploadHistory, UploadRequest} from "./UploadApiContext.ts";
 import {refreshableRequest} from "../../../../../_lib/actions.ts";
 import {enqueueSnackbar} from "notistack";
 import {R} from "../../../../../_lib/definitions.ts";
+import {useDriverInfo} from "../../infoProvider/DriverInfoContext.ts";
 
 const CHUNK_SIZE = 1024 * 1024 - 1;
 const MAX_RETRIES = 3;
@@ -33,6 +34,9 @@ export default function Provider({children} : { children: ReactNode}) {
     const currentId = useRef<string>(null);
     const waitingQueue = useRef<UploadTask[]>([]);
     const aborted = useRef<boolean>(false);
+    const successHandler = useRef<SuccessListener>(() => {});
+
+    const { refreshInfo } = useDriverInfo();
 
     useEffect(() => {
         md5Worker.current = new Worker(new URL("./md5Worker.js", import.meta.url));
@@ -87,13 +91,7 @@ export default function Provider({children} : { children: ReactNode}) {
             body: data
         });
 
-        if (result.code === 0) {
-            updateHistory(task.id, {status: "finished", progress: 1});
-            enqueueSnackbar(result.message, {variant: "success"});
-        } else {
-            updateHistory(task.id, {status: "error", progress: 0});
-            enqueueSnackbar(result.message, {variant: "error"});
-        }
+        if (result.code !== 0) throw new Error(result.message);
     }, [updateHistory]);
 
     const uploadChunk = useCallback(async (task: UploadTask, chunkCount: number, chunkSize: number, taskId: string) => {
@@ -134,19 +132,15 @@ export default function Provider({children} : { children: ReactNode}) {
 
     }, [updateHistory]);
 
-    const uploadChunkFinish = useCallback(async (task: UploadTask, taskId: string) => {
+    const uploadChunkFinish = useCallback(async (taskId: string) => {
         if (aborted.current) throw new AbortedError();
         const result = await refreshableRequest(`/api/driver/finish/task/${taskId}`, {
             method: "POST",
         });
 
-        if (result.code === 0) {
-            updateHistory(task.id, { progress: 1, status: "finished" });
-            enqueueSnackbar("Upload success", { variant: "success" });
-        } else {
-            throw new Error(result.message);
-        }
-    }, [updateHistory]);
+        if (result.code !== 0) throw new Error(result.message);
+
+    }, []);
 
     const chunkUpload = useCallback(async (task: UploadTask) => {
         updateHistory(task.id, {status: "preparing", progress: 0});
@@ -171,13 +165,11 @@ export default function Provider({children} : { children: ReactNode}) {
 
         if (result.code === 0) {
             if (result.fields.lightening) {
-                updateHistory(task.id, { status: "finished", progress: 1});
-                enqueueSnackbar(result.message, {variant: "success"});
                 return;
             }
             if (result.fields.taskId) {
                 await uploadChunk(task, chunkCount, CHUNK_SIZE, result.fields.taskId);
-                await uploadChunkFinish(task, result.fields.taskId);
+                await uploadChunkFinish(result.fields.taskId);
                 return;
             }
         }
@@ -206,6 +198,11 @@ export default function Provider({children} : { children: ReactNode}) {
                 } else {
                     await chunkUpload(task);
                 }
+
+                updateHistory(task.id, {status: "finished", progress: 1});
+                enqueueSnackbar("one item uploaded successfully", {variant: "success"});
+                successHandler.current(task.id, task.folder);
+                refreshInfo();
             } catch (e) {
                 if (e instanceof AbortedError) {
                     updateHistory(task.id, {status: "cancelled", progress: 0});
@@ -257,8 +254,12 @@ export default function Provider({children} : { children: ReactNode}) {
         updateHistory(id, {status: "cancelled", progress: 0});
     }, [updateHistory]);
 
+    const onSuccess = useCallback(
+        (listener: SuccessListener) => successHandler.current = listener, []
+    )
+
     return (
-        <UploadApiContext.Provider value={{ upload, cancelTask, tasks, running }}>
+        <UploadApiContext.Provider value={{ upload, cancelTask, tasks, running, onSuccess }}>
             {children}
         </UploadApiContext.Provider>
     );

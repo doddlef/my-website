@@ -1,7 +1,12 @@
 import {createContext, useContext} from "react";
 import {DriverInfo} from "../../_lib/defitions.ts";
 
-export const DriverInfoContext = createContext<DriverInfo | null>(null);
+type DriverInfoContextType = {
+    info: DriverInfo;
+    refreshInfo: () => void;
+}
+
+export const DriverInfoContext = createContext<DriverInfoContextType | null>(null);
 
 export const useDriverInfo = () => {
     const context = useContext(DriverInfoContext);

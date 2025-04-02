@@ -5,6 +5,7 @@ import { refreshableRequest } from "../../../../../_lib/actions.ts";
 import { ContentCache } from "./ContentCache.ts";
 import {ItemLabel, ItemView} from "../../../_lib/defitions.ts";
 import {useSearchParams} from "react-router-dom";
+import {useUploadApi} from "../uploadApi2/UploadApiContext.ts";
 
 type ItemApiResult = R & {
     fields: {
@@ -27,7 +28,8 @@ const contentApi = async (id: number): Promise<ContentApiResult> => {
 };
 
 const ContentCacheProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const { rootFolder } = useDriverInfo();
+    const { rootFolder } = useDriverInfo().info;
+    const { onSuccess } = useUploadApi();
     const [searchParams] = useSearchParams();
 
     const cache = useRef(new Map<number, ItemLabel>());
@@ -89,8 +91,18 @@ const ContentCacheProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     );
 
     useEffect(() => {
-        refresh();
+        refresh().then(() => console.log("init refresh"));
     }, [refresh]);
+
+    useEffect(() => {
+        onSuccess((_, folder) => {
+            if (folder === currentFolder) refresh().then(() => console.log("upload refresh"));
+        });
+
+        return () => {
+            onSuccess(() => {})
+        }
+    }, [currentFolder, onSuccess, refresh]);
 
     const getPath = useCallback(async (id: number) => {
         const path: ItemLabel[] = [];
