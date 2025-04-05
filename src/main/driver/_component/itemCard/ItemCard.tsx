@@ -5,8 +5,11 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {NavigateFunction} from "react-router-dom";
+import React from "react";
 
-export const ItemCard = ({ item, navigate }: { item: ItemView, navigate: NavigateFunction }) => {
+export const ItemCard = (
+    { item, navigate, openEdit }
+    : { item: ItemView, navigate: NavigateFunction, openEdit: (event: React.MouseEvent<HTMLButtonElement>) => void}) => {
 
     return (
         <Box
@@ -17,12 +20,26 @@ export const ItemCard = ({ item, navigate }: { item: ItemView, navigate: Navigat
             }}
         >
             <img src={getViewPicture(item.fileType)} alt="" className={"w-6 h-6"}/>
-            <Typography variant={"subtitle1"} className={"flex-1"}>
+            <Typography
+                sx={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                }}
+                variant={"subtitle1"}
+                className={"flex-1"}
+            >
                 {item.name}
             </Typography>
-            <IconButton>
+            <IconButton
+                onClick={event => {
+                    event.stopPropagation();
+                    openEdit(event);
+                }}
+            >
                 <MoreVertIcon/>
             </IconButton>
         </Box>
     );
 }
+

@@ -7,15 +7,26 @@ import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
 import {ItemCard} from "../itemCard/ItemCard.tsx";
 import MainContextMenu from "../MainContextMenu/MainContextMenu.tsx";
+import ItemEditMenu from "../itemEditMenu/ItemEditMenu.tsx";
+import {useSelected} from "../api/selectProvider/SelectedContext.ts";
 
 function ItemTable() {
     const { items } = useContentCache();
+    const { select } = useSelected();
 
     const navigate = useNavigate();
     const folders = useMemo(() => items.filter(f => f.folder), [items]);
     const files = useMemo(() => items.filter(f => !f.folder), [items]);
 
     const [menuPosition, setMenuPosition] = useState<{x: number, y: number} | null>(null);
+
+    const [editMenuEl, setEditMenuEl] = useState<HTMLElement | null>(null);
+    const [editItem, setEditItem] = useState<ItemView | null>(null);
+    const editMenuOpen = useMemo(() => Boolean(editMenuEl), [editMenuEl]);
+    const handleEditClose = () => {
+        setEditMenuEl(null);
+        setEditItem(null);
+    }
 
     const handleContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
         event.preventDefault();
@@ -49,7 +60,14 @@ function ItemTable() {
                 )}
                 {folders.map((folder: ItemView) => (
                     <Grid size={3} key={folder.id}>
-                        <ItemCard item={folder} navigate={navigate}/>
+                        <ItemCard
+                            item={folder}
+                            navigate={navigate}
+                            openEdit={(event) => {
+                                setEditMenuEl(event.currentTarget);
+                                select(folder);
+                            }}
+                        />
                     </Grid>
                 ))}
                 {files.length > 0 && (
@@ -61,7 +79,14 @@ function ItemTable() {
                 )}
                 {files.map((file: ItemView) => (
                     <Grid size={3} key={file.id}>
-                        <ItemCard item={file} navigate={navigate}/>
+                        <ItemCard
+                            item={file}
+                            navigate={navigate}
+                            openEdit={(event) => {
+                                setEditMenuEl(event.currentTarget);
+                                select(file);
+                            }}
+                        />
                     </Grid>
                 ))}
                 {folders.length === 0 && files.length === 0 && (
@@ -75,6 +100,7 @@ function ItemTable() {
                     </Grid>
                 )}
             </Grid>
+            <ItemEditMenu open={editMenuOpen} onClose={handleEditClose} anchorEl={editMenuEl} />
             <MainContextMenu menuPosition={menuPosition} handleClose={handleClose} />
         </Box>
     );

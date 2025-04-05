@@ -9,6 +9,7 @@ export type CreateFolderResult = R & {
 
 interface StructureApi {
     createFolder: (folder: number, name: string) => Promise<CreateFolderResult>;
+    renameItem: (id: number, name: string) => Promise<R>;
 }
 
 export const StructureApiContext = createContext<StructureApi | undefined>(undefined);

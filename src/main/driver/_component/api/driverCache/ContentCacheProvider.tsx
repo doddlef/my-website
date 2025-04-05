@@ -128,7 +128,9 @@ const ContentCacheProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }, [])
 
     return (
-        <ContentCache.Provider value={{ getPath, getLabel, getItem, cachePut, refresh, items, currentFolder, rootFolder }}>
+        <ContentCache.Provider
+            value={{
+                getPath, getLabel, getItem, cachePut, refresh, items, currentFolder, rootFolder}}>
             {children}
         </ContentCache.Provider>
     );

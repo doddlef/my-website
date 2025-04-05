@@ -1,33 +1,30 @@
 import Dialog from "@mui/material/Dialog";
-import {useContentCache} from "../api/driverCache/ContentCache.ts";
-import {useCallback, useState} from "react";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import TextField from "@mui/material/TextField";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
-import {useStructureApi} from "../api/structureApi/structureApiContext.ts";
+import {useCallback, useState} from "react";
+import {usePagination} from "../../../_middleware/Pagination/PaginationContext.ts";
 import {enqueueSnackbar} from "notistack";
+import {createFolder} from "../../../_api/CoreApi.ts";
+import Divider from "@mui/material/Divider";
 
-type CreateFolderDialogProps = {
+interface CreateFolderDialogProps {
     open: boolean;
     handleClose: () => void;
 }
 
-export default function CreateFolderDialog(props: CreateFolderDialogProps) {
-    const { currentFolder, items, cachePut, refresh } = useContentCache();
-    const { createFolder } = useStructureApi();
-    const {open, handleClose} = props;
+export default function CreateFolderDialog({open, handleClose}: CreateFolderDialogProps) {
     const [folderName, setFolderName] = useState<string>("");
-    const [error, setError] = useState<boolean>(false);
+    const { currentFolder, items, refresh } = usePagination();
+
     const onClose = useCallback(() => {
         setFolderName("");
-        setError(false);
         handleClose();
-    }, [handleClose]);
+    }, [handleClose])
 
-    const handleCreate = (folderName: string) => {
+    const handleCreate = useCallback((folderName: string) => {
         if (!folderName || /[\\/]/.test(folderName)) {
             enqueueSnackbar("folder name cannot be empty, contains '\\' or '/'", {
                 variant: "error",
@@ -44,8 +41,7 @@ export default function CreateFolderDialog(props: CreateFolderDialogProps) {
 
         createFolder(currentFolder, folderName)
             .then(r => {
-                if (r.code === 0 && r.fields) {
-                    cachePut({id: r.fields.id, folderId: currentFolder, type: "FOLDER", name: folderName, url: `/driver?folder=${r.fields.id}`});
+                if (r.code === 0) {
                     enqueueSnackbar("create successfully.", {
                         variant: "success",
                     });
@@ -55,23 +51,22 @@ export default function CreateFolderDialog(props: CreateFolderDialogProps) {
                     enqueueSnackbar(r.message, {
                         variant: "error",
                     });
-                    setError(true);
                 }
-            })
-    }
+            });
+    }, [currentFolder, items, onClose, refresh]);
 
     return (
-        <Dialog open={open} onClose={onClose}>
-            <DialogTitle>Create Folder</DialogTitle>
+        <Dialog
+            open={open}
+            onClose={onClose}
+            sx={{"& .MuiPaper-root": {width: 320}}}
+        >
+            <DialogTitle variant={"h5"}>Create Folder</DialogTitle>
             <DialogContent>
-                <DialogContentText>
-                    Create a new folder
-                </DialogContentText>
                 <TextField
                     autoFocus
                     fullWidth
                     required
-                    error={error}
                     type={"text"}
                     label={"name"}
                     variant={"standard"}
@@ -82,6 +77,7 @@ export default function CreateFolderDialog(props: CreateFolderDialogProps) {
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>
+                <Divider />
                 <Button
                     disabled={folderName === ""}
                     onClick={() => handleCreate(folderName)}

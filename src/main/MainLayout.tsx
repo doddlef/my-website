@@ -5,10 +5,11 @@ import {lazy, useMemo} from "react";
 import {AnimatePresence} from "motion/react";
 import Transition from "../_component/transition/Transition.tsx";
 import Box from "@mui/material/Box";
+import AuthRoute from "../_component/authRouter/AuthRoute.tsx";
 
 const Auth = lazy(() => import("./auth/AuthPage.tsx"));
 const Blog = lazy(() => import("./blog/Layout.tsx"));
-const Driver = lazy(() => import("./driver/Layout.tsx"));
+const Driver = lazy(() => import("./driver_v2/Layout.tsx"));
 const Home = lazy(() => import("./home/Layout.tsx"));
 const Study = lazy(() => import("./animation/Layout.tsx"));
 
@@ -42,9 +43,11 @@ export default function MainLayout() {
                         </Transition>
                     } />
                     <Route path={"/driver/*"} element={
-                        <Transition>
-                            <Driver />
-                        </Transition>
+                        <AuthRoute>
+                            <Transition>
+                                <Driver />
+                            </Transition>
+                        </AuthRoute>
                     } />
                 </Routes>
             </AnimatePresence>

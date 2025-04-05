@@ -5,25 +5,23 @@ export type UploadTaskStatus = "waiting" | "preparing" | "uploading" | "finished
 export type UploadRequest = {
     file: File;
     folder: number;
-    name: string;
-    extension: string;
 }
 
-export type UploadTask = {
+export type UploadHistory = {
     id: string;
-    file: File;
-    folder: number;
-    status: UploadTaskStatus;
     name: string;
-    extension: string;
+    status: UploadTaskStatus;
     progress: number;
-    retries: number;
-};
+}
+
+export type SuccessListener = (id: string, folder: number) => void;
 
 export type UploadApi = {
     upload: (request: UploadRequest) => Promise<void>;
     cancelTask: (taskId: string) => void;
-    tasks: UploadTask[];
+    tasks: UploadHistory[];
+    running: boolean;
+    onSuccess: (listener: SuccessListener) => void;
 };
 
 export const UploadApiContext = createContext<UploadApi | undefined>(undefined);
