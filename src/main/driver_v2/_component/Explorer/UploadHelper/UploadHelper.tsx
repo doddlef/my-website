@@ -14,7 +14,7 @@ import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import StatusIcon from "./StatusIcon.tsx";
 import {useUploadApi} from "../../../_middleware/uploadApi2/UploadApiContext.ts";
-import {usePagination} from "../../../_middleware/Pagination/PaginationContext.ts";
+import {usePagination} from "../../../_middleware/Explorer/Pagination/PaginationContext.ts";
 import Tooltip from "@mui/material/Tooltip";
 
 const LINE_HEIGHT = 60;
@@ -58,13 +58,13 @@ export default function UploadHelper() {
                 direction={"up"}
             />
             <Paper
-                className={"w-96 absolute right-8 bottom-8 overflow-hidden"}
+                className={"w-96 fixed right-8 bottom-8 overflow-hidden z-50"}
                 sx={{borderRadius: 2}}
                 elevation={2}
                 component={motion.div}
                 animate={{
                     opacity: detail ? 1 : 0,
-                    y: detail ? 0 : 80
+                    y: detail ? 0 : 120
                 }}
             >
                 <Box

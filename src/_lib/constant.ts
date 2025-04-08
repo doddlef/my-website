@@ -1,0 +1,1 @@
+export const ACCESS_TOKEN_MINUTES = Number(import.meta.env.VITE_APP_BASE_URL);

@@ -2,7 +2,7 @@ import {BrowserRouter} from "react-router";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import {SnackbarProvider} from "notistack";
 import MainLayout from "./main/MainLayout.tsx";
-import {AccountProvider} from "./_component/accountProvider/AccountProvider.tsx";
+import {AuthProvider} from "./_component/accountProvider/AuthProvider.tsx";
 
 const theme = createTheme({
   colorSchemes: {
@@ -38,11 +38,11 @@ function App() {
   return (
       <ThemeProvider theme={theme}>
         <SnackbarProvider maxSnack={4}>
-          <AccountProvider autoLogin={true}>
+          <AuthProvider autoLogin={true}>
             <BrowserRouter>
               <MainLayout />
             </BrowserRouter>
-          </AccountProvider>
+          </AuthProvider>
         </SnackbarProvider>
       </ThemeProvider>
   )

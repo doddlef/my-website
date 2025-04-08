@@ -9,6 +9,7 @@ import NavSideBar from "./_component/NavSiderBar.tsx";
 import {Route, Routes} from "react-router-dom";
 import ContentCacheProvider from "./_middleware/ContentCache/ContentCacheProvider.tsx";
 import UploadApiProvider from "./_middleware/uploadApi2/UploadApiProvider.tsx";
+import FileCacheProvider from "./_middleware/fileCache/FileCacheProvider.tsx";
 
 const Explorer = lazy(() => import("./explorer/Layout.tsx"));
 
@@ -43,22 +44,26 @@ export default function Layout() {
 
     return (
         <DriverInfoContext.Provider value={{ info, refreshInfo }}>
-            <ContentCacheProvider>
-                <UploadApiProvider>
-                    <Box
-                        sx={{bgcolor: "background.default", color: "text.primary"}}
-                        className={"w-screen h-screen overflow-hidden flex"}
-                    >
-                        <NavSideBar />
-                        <Box className={"flex-1 h-screen"}>
-                            <NavHeader />
-                            <Routes>
-                                <Route index element={<Explorer/>} />
-                            </Routes>
+            <FileCacheProvider>
+                <ContentCacheProvider>
+                    <UploadApiProvider>
+                        <Box
+                            sx={{bgcolor: "background.default", color: "text.primary"}}
+                            className={"w-screen h-screen overflow-hidden flex"}
+                        >
+                            <NavSideBar />
+                            <Box className={"flex-1 h-screen overflow-hidden"}>
+                                <NavHeader />
+                                <div className={"h-full overflow-hidden"}>
+                                    <Routes>
+                                        <Route index element={<Explorer/>} />
+                                    </Routes>
+                                </div>
+                            </Box>
                         </Box>
-                    </Box>
-                </UploadApiProvider>
-            </ContentCacheProvider>
+                    </UploadApiProvider>
+                </ContentCacheProvider>
+            </FileCacheProvider>
         </DriverInfoContext.Provider>
     )
 }

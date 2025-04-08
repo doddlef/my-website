@@ -5,7 +5,7 @@ import TextField from "@mui/material/TextField";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import {useCallback, useState} from "react";
-import {usePagination} from "../../../_middleware/Pagination/PaginationContext.ts";
+import {usePagination} from "../../../_middleware/Explorer/Pagination/PaginationContext.ts";
 import {enqueueSnackbar} from "notistack";
 import {createFolder} from "../../../_api/CoreApi.ts";
 import Divider from "@mui/material/Divider";

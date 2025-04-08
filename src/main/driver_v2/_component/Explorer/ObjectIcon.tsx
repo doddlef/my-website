@@ -1,5 +1,5 @@
-import {useSelected} from "../../_middleware/Selected/SelectedContext.ts";
-import {useMemo} from "react";
+import {useSelected} from "../../_middleware/Explorer/Selected/SelectedContext.ts";
+import React, {useMemo} from "react";
 import {ItemView} from "../../definations.ts";
 import Box from "@mui/material/Box";
 import {NavigateFunction} from "react-router-dom";
@@ -10,15 +10,18 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import { motion } from "motion/react";
 import Tooltip from "@mui/material/Tooltip";
+import {useItemPreview} from "../../_middleware/Explorer/ItemPreview/ItemPreviewContext.ts";
 
 type ObjectIconProps = {
     item: ItemView;
-    navigate: NavigateFunction
+    navigate: NavigateFunction;
+    itemMenu: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
-export default function ObjectIcon({item, navigate} : ObjectIconProps) {
+export default function ObjectIcon({item, navigate, itemMenu} : ObjectIconProps) {
     const { selected, select, add, deselect } = useSelected();
-    const isSelected = useMemo(() => selected.includes(item.id), [item.id, selected]);
+    const { previewFile } = useItemPreview();
+    const isSelected = useMemo(() => selected.some(i => i.id === item.id), [item.id, selected]);
 
     return (
         <Box
@@ -29,21 +32,23 @@ export default function ObjectIcon({item, navigate} : ObjectIconProps) {
                 if (isSelected) {
                     deselect(item.id);
                 } else if(e.ctrlKey || e.metaKey) {
-                    add(item.id);
+                    add(item);
                 } else {
-                    select(item.id);
+                    select(item);
                 }
             }}
 
             onDoubleClick={(e) => {
                 e.preventDefault();
                 if (item.folder) navigate(`/driver?folder=${item.id}`);
+                else previewFile(item.id);
             }}
 
             onContextMenu={(e) => {
                 e.preventDefault();
                 e.stopPropagation()
-                select(item.id);
+                select(item);
+                itemMenu(e);
             }}
         >
             {isSelected ? (
@@ -83,7 +88,8 @@ export default function ObjectIcon({item, navigate} : ObjectIconProps) {
             </Tooltip>
             <IconButton onClick={(e) => {
                 e.stopPropagation();
-                select(item.id);
+                select(item);
+                itemMenu(e);
             }}>
                 <MoreVertIcon/>
             </IconButton>

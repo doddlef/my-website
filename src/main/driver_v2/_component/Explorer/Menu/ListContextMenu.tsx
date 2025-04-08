@@ -6,7 +6,10 @@ import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import Menu from "@mui/material/Menu";
-import useModals from "../../../_middleware/useModals/ModalsContext.ts";
+import useModals from "../../../_middleware/Explorer/useModals/ModalsContext.ts";
+import {ChangeEvent, useCallback, useRef} from "react";
+import {useUploadApi} from "../../../_middleware/uploadApi2/UploadApiContext.ts";
+import {usePagination} from "../../../_middleware/Explorer/Pagination/PaginationContext.ts";
 
 export type MainContextMenuProps = {
     menuPosition: { y: number; x: number } | null;
@@ -15,37 +18,56 @@ export type MainContextMenuProps = {
 
 export default function ListContextMenu({menuPosition, handleClose} : MainContextMenuProps) {
     const { changeModal } = useModals();
+    const { currentFolder } = usePagination();
+    const { upload } = useUploadApi();
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+    const handleFileClick = useCallback(() => {
+        fileInputRef.current?.click();
+    }, []);
+
+    const handleFileChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            upload({file: file, folder: currentFolder}).then(() => console.log('adding into queue'));
+        }
+        event.target.value = "";
+    }, [currentFolder, upload]);
+
 
     return (
-        <Menu
-            sx={{'& .MuiPaper-root': {borderRadius: 3, width: 200}}}
-            anchorReference="anchorPosition"
-            anchorPosition={menuPosition ? { top: menuPosition.y, left: menuPosition.x } : undefined}
-            open={Boolean(menuPosition)}
-            onClose={handleClose}
-        >
-            <MenuList>
-                <MenuItem onClick={() => {
-                    changeModal("create_folder");
-                    handleClose();
-                }}>
-                    <ListItemIcon>
-                        <CreateNewFolderIcon />
-                    </ListItemIcon>
-                    <ListItemText>
-                        new folder
-                    </ListItemText>
-                </MenuItem>
-                <Divider />
-                <MenuItem onClick={() => alert("upload file")} >
-                    <ListItemIcon>
-                        <UploadFileIcon />
-                    </ListItemIcon>
-                    <ListItemText>
-                        upload file
-                    </ListItemText>
-                </MenuItem>
-            </MenuList>
-        </Menu>
+        <>
+            <Menu
+                sx={{'& .MuiPaper-root': {borderRadius: 3, width: 200}}}
+                anchorReference="anchorPosition"
+                anchorPosition={menuPosition ? {top: menuPosition.y, left: menuPosition.x} : undefined}
+                open={Boolean(menuPosition)}
+                onClose={handleClose}
+            >
+                <MenuList>
+                    <MenuItem onClick={() => {
+                        changeModal("create_folder");
+                        handleClose();
+                    }}>
+                        <ListItemIcon>
+                            <CreateNewFolderIcon/>
+                        </ListItemIcon>
+                        <ListItemText>
+                            new folder
+                        </ListItemText>
+                    </MenuItem>
+                    <Divider/>
+                    <MenuItem onClick={() => handleFileClick()}>
+                        <ListItemIcon>
+                            <UploadFileIcon/>
+                        </ListItemIcon>
+                        <ListItemText>
+                            upload file
+                        </ListItemText>
+                    </MenuItem>
+                </MenuList>
+            </Menu>
+            <input type={"file"} className={"hidden"} ref={fileInputRef} onChange={handleFileChange}/>
+        </>
     );
 }

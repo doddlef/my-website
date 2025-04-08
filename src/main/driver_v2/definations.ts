@@ -15,7 +15,7 @@ export type ItemView = {
     fileType: FileType,
     status: FileStatus,
     folderId: number,
-    size: number | null,
+    size: number;
     ownerUid: number,
     createdAt: string,
     editedAt: string,

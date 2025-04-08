@@ -12,7 +12,7 @@ export default function NavSideBar() {
 
     return (
         <Box
-            sx={{width: 240}}
+            sx={{width: 240, minWidth: 240}}
             className={"h-full flex flex-col"}
         >
             <div className={"flex-1"}/>
