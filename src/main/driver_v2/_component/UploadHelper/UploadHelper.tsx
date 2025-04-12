@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import SpeedDial from '@mui/material/SpeedDial';
-import {ChangeEvent, useCallback, useRef, useState} from "react";
+import {ChangeEvent, useCallback, useMemo, useRef, useState} from "react";
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
@@ -13,9 +13,9 @@ import {styled} from "@mui/material/styles";
 import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import StatusIcon from "./StatusIcon.tsx";
-import {useUploadApi} from "../../../_middleware/uploadApi2/UploadApiContext.ts";
-import {usePagination} from "../../../_middleware/(Explorer)/Pagination/PaginationContext.ts";
+import {useUploadApi} from "../../_middleware/uploadApi2/UploadApiContext.ts";
 import Tooltip from "@mui/material/Tooltip";
+import {enqueueSnackbar} from "notistack";
 
 const LINE_HEIGHT = 60;
 
@@ -29,23 +29,31 @@ const StyledLine = styled(Box)(({theme}) => ({
     padding: "0.5rem",
 }));
 
-export default function UploadHelper() {
+type UploadHelperProps = {
+    folder?: number;
+};
+
+export default function UploadHelper({folder} : UploadHelperProps) {
     const [detail, setDetail] = useState(false);
     const { upload, tasks } = useUploadApi();
     const fileInputRef = useRef<HTMLInputElement | null>(null);
-    const { currentFolder } = usePagination();
+    // const { currentFolder } = usePagination();
 
     const handleClick = useCallback(() => {
         fileInputRef.current?.click();
     }, []);
 
+    const uploadAble = useMemo(() => Boolean(folder), [folder]);
+
     const handleFileChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
-        if (file) {
-            upload({file: file, folder: currentFolder}).then(() => console.log('adding into queue'));
+        if (file && folder) {
+            upload({file: file, folder: folder}).then(() => console.log('adding into queue'));
+        } else {
+            enqueueSnackbar("must specific a folder", {variant: "error"});
         }
         event.target.value = "";
-    }, [currentFolder, upload]);
+    }, [folder, upload]);
 
     return (
         <>
@@ -77,11 +85,13 @@ export default function UploadHelper() {
                     <Typography variant={"h6"} className={"flex-1"}>
                         Upload Task
                     </Typography>
-                    <IconButton
-                        onClick={handleClick}
-                    >
-                        <AddOutlinedIcon sx={{color: "primary.contrastText"}}/>
-                    </IconButton>
+                    {uploadAble && (
+                        <IconButton
+                            onClick={handleClick}
+                        >
+                            <AddOutlinedIcon sx={{color: "primary.contrastText"}}/>
+                        </IconButton>
+                    )}
                 </Box>
                 <Stack
                     sx={{minHeight: LINE_HEIGHT, maxHeight: LINE_HEIGHT * 4}}

@@ -53,7 +53,7 @@ export default function Layout() {
                         <NavSideBar />
                         <Box className={"flex-1 h-screen overflow-hidden"}>
                             <NavHeader />
-                            <div className={"h-full overflow-hidden"}>
+                            <div className={"w-full h-full bg-[rgb(239,244,251)] dark:bg-[rgb(43,54,66)] rounded-tl-3xl p-4"}>
                                 <Routes>
                                     <Route index element={<Explorer/>} />
                                     <Route path={"/bin"} element={<RecycleBin />} />

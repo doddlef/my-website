@@ -1,4 +1,4 @@
-import {UploadHistory} from "../../../_middleware/uploadApi2/UploadApiContext.ts";
+import {UploadHistory} from "../../_middleware/uploadApi2/UploadApiContext.ts";
 import CatchingPokemonOutlinedIcon from "@mui/icons-material/CatchingPokemonOutlined";
 import HourglassTopOutlinedIcon from "@mui/icons-material/HourglassTopOutlined";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
