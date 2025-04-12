@@ -32,3 +32,20 @@ function getViewPictureName(type: FileType | null): string {
 export function getViewPicture(type: FileType | null): string {
     return `/file_icon/${getViewPictureName(type)}.svg`;
 }
+
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import isToday from "dayjs/plugin/isToday";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+
+dayjs.extend(relativeTime);
+dayjs.extend(isToday);
+dayjs.extend(localizedFormat);
+
+export function formatSmartDate(input: string): string {
+    const date = dayjs(input);
+    if (date.isToday()) {
+        return `Today ${date.format("h:mm A")}`;
+    }
+    return date.format("MMM D, YYYY");
+}

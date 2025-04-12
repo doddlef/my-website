@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import {ItemView} from "../../../definations.ts";
+import {ItemView} from "../../definations.ts";
 
 export interface SelectedContextType {
     selected: ItemView[];

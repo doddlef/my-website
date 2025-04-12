@@ -1,7 +1,8 @@
 import {useCallback} from "react";
+import useModals from "../../../_middleware/useModals/ModalsContext.ts";
 import CreateFolderDialog from "./CreateFolderDialog.tsx";
-import useModals from "../../../_middleware/Explorer/useModals/ModalsContext.ts";
 import RenameItemDialog from "./RenameItemDialog.tsx";
+import DeleteModel from "./DeleteModel.tsx";
 
 export default function Modals() {
     const { modal, changeModal } = useModals();
@@ -14,6 +15,7 @@ export default function Modals() {
         <>
             <CreateFolderDialog open={modal === "create_folder"} handleClose={handleClose} />
             <RenameItemDialog open={modal === "rename"} handleClose={handleClose} />
+            <DeleteModel open={modal === "delete"} handleClose={handleClose} />
         </>
     );
 }

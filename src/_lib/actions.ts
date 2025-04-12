@@ -40,7 +40,7 @@ export type AccountResponse = R & {
 
 export async function currentAccount(): Promise<AccountResponse> {
     try {
-        const result = await refreshableRequest("/api/account/me/public", {method: "GET"});
+        const result = await refreshableRequest("/api/account/me", {method: "GET"});
 
         return result as AccountResponse;
     } catch (e) {

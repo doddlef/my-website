@@ -1,47 +1,44 @@
-import {useSelected} from "../../_middleware/Selected/SelectedContext.ts";
+import {BinItemView} from "../../definations.ts";
+import Paper from "@mui/material/Paper";
+import useSelected from "../../_middleware/Selected/SelectedContext.ts";
 import {useMemo} from "react";
-import {ItemView} from "../../definations.ts";
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import {NavigateFunction} from "react-router-dom";
 import {formatFileSize, formatSmartDate, getViewPicture} from "../../_lib/utils.ts";
 import Typography from "@mui/material/Typography";
+import Tooltip from "@mui/material/Tooltip";
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import Tooltip from "@mui/material/Tooltip";
-import {useItemPreview} from "../../_middleware/(Explorer)/ItemPreview/ItemPreviewContext.ts";
-import Paper from "@mui/material/Paper";
 
 type ObjectIconProps = {
-    item: ItemView;
-    navigate: NavigateFunction;
+    item: BinItemView;
     itemMenu: (anchor: HTMLElement) => void;
 }
 
-export default function ObjectIcon({item, navigate, itemMenu} : ObjectIconProps) {
-    const { selected, select, add } = useSelected();
-    const { previewFile } = useItemPreview();
+export default function ObjectIcon({item, itemMenu} : ObjectIconProps) {
+    const { select, selected, add } = useSelected();
     const isSelected = useMemo(() => selected.some(i => i.id === item.id), [item.id, selected]);
 
     return (
         <Paper
-            sx={{borderRadius: 2, bgcolor: "background.default", color: "text.primary", padding: 2, position: "relative"}}
+            elevation={2}
+            sx={{
+                borderRadius: 4,
+                bgcolor: "background.default",
+                color: "text.primary",
+                padding: 2,
+                position: "relative",
+            }}
             className={"cursor-pointer"}
+
             onClick={(e) => {
                 e.stopPropagation();
-
-                if (e.ctrlKey || e.metaKey) add(item);
+                if (e.ctrlKey || e.metaKey) add(item)
                 else select(item);
             }}
 
-            onDoubleClick={(e) => {
-                e.preventDefault();
-                if (item.folder) navigate(`/driver?folder=${item.id}`);
-                else previewFile(item.id);
-            }}
-
             onContextMenu={(e) => {
+                e.stopPropagation();
                 e.preventDefault();
-                e.stopPropagation()
                 select(item);
                 itemMenu(e.currentTarget);
             }}
@@ -59,7 +56,7 @@ export default function ObjectIcon({item, navigate, itemMenu} : ObjectIconProps)
                     }}
                     disabled={isSelected}
                 >
-                    <MoreVertIcon />
+                    <MoreVertIcon/>
                 </IconButton>
             </div>
             <div className={"w-full p-4 flex justify-center items-center"}>
@@ -72,7 +69,7 @@ export default function ObjectIcon({item, navigate, itemMenu} : ObjectIconProps)
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                     }}
-                    variant={"subtitle1"}
+                    variant={"body1"}
                     align={"center"}
                 >
                     {item.name}
@@ -83,7 +80,7 @@ export default function ObjectIcon({item, navigate, itemMenu} : ObjectIconProps)
                 sx={{color: "text.secondary"}}
                 align={"center"}
             >
-                {formatSmartDate(item.editedAt)} {item.size && ` | ${formatFileSize(item.size)}`}
+                {formatSmartDate(item.deletedAt)} {item.size && ` | ${formatFileSize(item.size)}`}
             </Typography>
         </Paper>
     );

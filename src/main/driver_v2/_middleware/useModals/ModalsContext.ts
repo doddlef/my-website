@@ -1,6 +1,6 @@
 import {createContext, useContext} from "react";
 
-export type ModalOption = "create_folder" | "rename" | "move" | "delete" | "upload";
+export type ModalOption = string | null;
 
 export interface ModalsContextType {
     modal: ModalOption | null;

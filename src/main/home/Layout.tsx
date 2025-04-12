@@ -10,6 +10,7 @@ import ThemeSwitch from "../_component/ThemeSwitch.tsx";
 import Typography from "@mui/material/Typography";
 import EndingPage from "./_page/EndingPage.tsx";
 import ConstructionPage from "./_page/ConstructionPage.tsx";
+import {Link} from "react-router-dom";
 
 export default function Layout() {
     const wrapperRef = useRef<HTMLDivElement>(null);
@@ -77,7 +78,7 @@ export default function Layout() {
                         blog
                     </Typography>
                 </HeaderButton>
-                <HeaderButton onClick={() => alert("not implement yet!")}>
+                <Link to={"/driver"}>
                     <Typography
                         component={"a"}
                         href={"/driver"}
@@ -86,7 +87,7 @@ export default function Layout() {
                     >
                         driver
                     </Typography>
-                </HeaderButton>
+                </Link>
                 <ThemeSwitch />
             </header>
 

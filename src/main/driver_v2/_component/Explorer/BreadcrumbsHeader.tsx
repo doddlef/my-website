@@ -4,9 +4,9 @@ import {ItemLabel} from "../../definations.ts";
 import {useContentCache} from "../../_middleware/ContentCache/ContentCache.ts";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Link from "@mui/material/Link";
-import {usePagination} from "../../_middleware/Explorer/Pagination/PaginationContext.ts";
+import {usePagination} from "../../_middleware/(Explorer)/Pagination/PaginationContext.ts";
 
-const BreadcrumbNav = () => {
+const BreadcrumbsHeader = () => {
     const [breadcrumbs, setBreadcrumbs] = useState<ItemLabel[]>([])
     const navigate = useNavigate();
     const { currentFolder } = usePagination();
@@ -40,4 +40,4 @@ const BreadcrumbNav = () => {
     );
 }
 
-export default BreadcrumbNav;
+export default BreadcrumbsHeader;

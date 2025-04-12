@@ -9,12 +9,13 @@ import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import IosShareIcon from '@mui/icons-material/IosShare';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+import DeleteIcon from '@mui/icons-material/Delete';
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
-import useSelected from "../../../_middleware/Explorer/Selected/SelectedContext.ts";
-import useModals from "../../../_middleware/Explorer/useModals/ModalsContext.ts";
+import useSelected from "../../../_middleware/Selected/SelectedContext.ts";
+import useModals from "../../../_middleware/useModals/ModalsContext.ts";
 import {NavigateFunction} from "react-router-dom";
-import {useItemPreview} from "../../../_middleware/Explorer/ItemPreview/ItemPreviewContext.ts";
+import {useItemPreview} from "../../../_middleware/(Explorer)/ItemPreview/ItemPreviewContext.ts";
 
 type ItemEditMenuProps = {
     open: boolean;
@@ -77,6 +78,16 @@ export default function ItemContextMenu({open, onClose, anchorEl, navigate}: Ite
                         <Typography variant="body2" sx={{color: "text.secondary"}}>
                             cba
                         </Typography>
+                    </MenuItem>
+                    <MenuItem onClick={e => {
+                        e.stopPropagation();
+                        changeModal("delete");
+                        onClose();
+                    }}>
+                        <ListItemIcon>
+                            <DeleteIcon />
+                        </ListItemIcon>
+                        <ListItemText>delete</ListItemText>
                     </MenuItem>
                     <Divider />
                     <MenuItem>

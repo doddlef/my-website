@@ -6,10 +6,10 @@ import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import Menu from "@mui/material/Menu";
-import useModals from "../../../_middleware/Explorer/useModals/ModalsContext.ts";
+import useModals from "../../../_middleware/useModals/ModalsContext.ts";
 import {ChangeEvent, useCallback, useRef} from "react";
 import {useUploadApi} from "../../../_middleware/uploadApi2/UploadApiContext.ts";
-import {usePagination} from "../../../_middleware/Explorer/Pagination/PaginationContext.ts";
+import {usePagination} from "../../../_middleware/(Explorer)/Pagination/PaginationContext.ts";
 
 export type MainContextMenuProps = {
     menuPosition: { y: number; x: number } | null;
@@ -29,7 +29,9 @@ export default function ListContextMenu({menuPosition, handleClose} : MainContex
     const handleFileChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
-            upload({file: file, folder: currentFolder}).then(() => console.log('adding into queue'));
+            upload({file: file, folder: currentFolder})
+                .then(() => console.log('adding into queue'))
+                .catch(console.error);
         }
         event.target.value = "";
     }, [currentFolder, upload]);
@@ -57,7 +59,10 @@ export default function ListContextMenu({menuPosition, handleClose} : MainContex
                         </ListItemText>
                     </MenuItem>
                     <Divider/>
-                    <MenuItem onClick={() => handleFileClick()}>
+                    <MenuItem onClick={() => {
+                        handleFileClick();
+                        handleClose();
+                    }}>
                         <ListItemIcon>
                             <UploadFileIcon/>
                         </ListItemIcon>

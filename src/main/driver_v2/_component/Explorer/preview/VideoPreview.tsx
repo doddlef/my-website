@@ -31,8 +31,8 @@ export default function VideoPreview({fileId, size, className}: VideoPreviewProp
     }
 
     return (
-        <div className={className}>
-            <video controls autoPlay={true}>
+        <div>
+            <video controls autoPlay={true} className={`max-h-[90vh] max-w-[90vw] object-contain ${className || ""}`}>
                 <source src={src} type="video/mp4"/>
             </video>
         </div>

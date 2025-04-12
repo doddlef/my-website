@@ -1,6 +1,6 @@
 import {ReactNode, useCallback, useMemo, useState} from "react";
-import {ItemPreviewContext} from "../../../_middleware/Explorer/ItemPreview/ItemPreviewContext.ts";
-import {usePagination} from "../../../_middleware/Explorer/Pagination/PaginationContext.ts";
+import {ItemPreviewContext} from "../../../_middleware/(Explorer)/ItemPreview/ItemPreviewContext.ts";
+import {usePagination} from "../../../_middleware/(Explorer)/Pagination/PaginationContext.ts";
 import {FileType} from "../../../definations.ts";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
@@ -26,7 +26,7 @@ function ItemPreviewProvider({children} : {children: ReactNode}) {
         setIndex(i);
 
         if (i === -1) setItems([]);
-        else setItems(() => files.map(f => ({id: f.id, name: f.name, fileType: f.fileType, size: f.size})));
+        else setItems(() => files.map(f => ({id: f.id, name: f.name, fileType: f.fileType, size: f.size ?? 0})));
     }, [files]);
 
     return (
@@ -65,7 +65,7 @@ function Previews({files, index, setIndex}: ItemPreviewProps) {
         >
             {
                 index > 0 &&
-                <div className={"absolute top-1/2 left-12"}>
+                <div className={"absolute top-1/2 left-8"}>
                     <IconButton sx={{color: "white"}}
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -81,7 +81,7 @@ function Previews({files, index, setIndex}: ItemPreviewProps) {
             </div>
             {
                 index < files.length - 1 &&
-                <div className={"absolute top-1/2 right-12"}>
+                <div className={"absolute top-1/2 right-8"}>
                     <IconButton sx={{color: "white"}}
                                 onClick={(e) => {
                                     e.stopPropagation();

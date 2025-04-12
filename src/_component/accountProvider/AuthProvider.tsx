@@ -10,7 +10,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode, autoLogin?: boo
     useEffect(() => {
         const fetchAccount = async () => {
             const result = await currentAccount();
-            if (result.fields?.account) setAccount(result.fields.account);
+            if (result.code === 0 && result.fields?.account) setAccount(result.fields.account);
             else setAccount(null);
 
             setChecked(true);

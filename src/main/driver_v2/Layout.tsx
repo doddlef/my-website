@@ -8,10 +8,10 @@ import NavHeader from "./_component/NavHeader.tsx";
 import NavSideBar from "./_component/NavSiderBar.tsx";
 import {Route, Routes} from "react-router-dom";
 import ContentCacheProvider from "./_middleware/ContentCache/ContentCacheProvider.tsx";
-import UploadApiProvider from "./_middleware/uploadApi2/UploadApiProvider.tsx";
-import FileCacheProvider from "./_middleware/fileCache/FileCacheProvider.tsx";
+import {ViewStateProvider} from "./_middleware/viewState/ViewStateProvider.tsx";
 
 const Explorer = lazy(() => import("./explorer/Layout.tsx"));
+const RecycleBin = lazy(() => import("./recycleBin/Layout.tsx"));
 
 export default function Layout() {
     const [info, setInfo] = useState<DriverInfo | null>(null);
@@ -44,26 +44,25 @@ export default function Layout() {
 
     return (
         <DriverInfoContext.Provider value={{ info, refreshInfo }}>
-            <FileCacheProvider>
-                <ContentCacheProvider>
-                    <UploadApiProvider>
-                        <Box
-                            sx={{bgcolor: "background.default", color: "text.primary"}}
-                            className={"w-screen h-screen overflow-hidden flex"}
-                        >
-                            <NavSideBar />
-                            <Box className={"flex-1 h-screen overflow-hidden"}>
-                                <NavHeader />
-                                <div className={"h-full overflow-hidden"}>
-                                    <Routes>
-                                        <Route index element={<Explorer/>} />
-                                    </Routes>
-                                </div>
-                            </Box>
+            <ContentCacheProvider>
+                <ViewStateProvider>
+                    <Box
+                        sx={{bgcolor: "background.default", color: "text.primary"}}
+                        className={"w-screen h-screen overflow-hidden flex"}
+                    >
+                        <NavSideBar />
+                        <Box className={"flex-1 h-screen overflow-hidden"}>
+                            <NavHeader />
+                            <div className={"h-full overflow-hidden"}>
+                                <Routes>
+                                    <Route index element={<Explorer/>} />
+                                    <Route path={"/bin"} element={<RecycleBin />} />
+                                </Routes>
+                            </div>
                         </Box>
-                    </UploadApiProvider>
-                </ContentCacheProvider>
-            </FileCacheProvider>
+                    </Box>
+                </ViewStateProvider>
+            </ContentCacheProvider>
         </DriverInfoContext.Provider>
     )
 }

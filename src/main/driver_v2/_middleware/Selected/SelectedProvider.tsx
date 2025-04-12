@@ -1,10 +1,8 @@
-import React, {useState, useCallback, useMemo, useEffect} from "react";
+import React, {useState, useCallback, useMemo} from "react";
 import {SelectedContext} from "./SelectedContext.ts";
-import {ItemView} from "../../../definations.ts";
-import {usePagination} from "../Pagination/PaginationContext.ts";
+import {ItemView} from "../../definations.ts";
 
 const SelectedProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const { currentFolder } = usePagination();
     const [selected, setSelected] = useState<ItemView[]>([]);
 
     const select = useCallback((item: ItemView) => {
@@ -20,10 +18,6 @@ const SelectedProvider: React.FC<{ children: React.ReactNode }> = ({ children })
     }, [])
 
     const clear = useCallback(() => setSelected([]), []);
-
-    useEffect(() => {
-        clear();
-    }, [clear, currentFolder]);
 
     const firstItem = useMemo(() => selected.length > 0 ? selected[0] : null, [selected]);
 

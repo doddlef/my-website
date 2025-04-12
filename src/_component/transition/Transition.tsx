@@ -24,7 +24,7 @@ const Transition = ({ children }: { children: React.ReactNode }) => {
                                 animate={{scaleY: 0}}
                                 exit={{scaleY: 0}}
                                 transition={{
-                                    duration: 1,
+                                    duration: 0.6,
                                     ease: [0.22, 1, 0.36, 1],
                                     delay: calculateDelay(row, col, 10),
                                 }}
@@ -45,7 +45,7 @@ const Transition = ({ children }: { children: React.ReactNode }) => {
                                 animate={{scaleY: 0}}
                                 exit={{scaleY: 1}}
                                 transition={{
-                                    duration: 1,
+                                    duration: 0.6,
                                     ease: [0.22, 1, 0.36, 1],
                                     delay: calculateDelay(row, col, 10),
                                 }}

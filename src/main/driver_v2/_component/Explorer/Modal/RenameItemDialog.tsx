@@ -7,8 +7,8 @@ import TextField from "@mui/material/TextField";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import {renameItem} from "../../../_api/CoreApi.ts";
-import useSelected from "../../../_middleware/Explorer/Selected/SelectedContext.ts";
-import {usePagination} from "../../../_middleware/Explorer/Pagination/PaginationContext.ts";
+import useSelected from "../../../_middleware/Selected/SelectedContext.ts";
+import {usePagination} from "../../../_middleware/(Explorer)/Pagination/PaginationContext.ts";
 
 type RenameDialogProps = {
     open: boolean;

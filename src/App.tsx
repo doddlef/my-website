@@ -3,6 +3,8 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import {SnackbarProvider} from "notistack";
 import MainLayout from "./main/MainLayout.tsx";
 import {AuthProvider} from "./_component/accountProvider/AuthProvider.tsx";
+import UploadApiProvider from "./main/driver_v2/_middleware/uploadApi2/UploadApiProvider.tsx";
+import FileCacheProvider from "./main/driver_v2/_middleware/fileCache/FileCacheProvider.tsx";
 
 const theme = createTheme({
   colorSchemes: {
@@ -39,9 +41,13 @@ function App() {
       <ThemeProvider theme={theme}>
         <SnackbarProvider maxSnack={4}>
           <AuthProvider autoLogin={true}>
-            <BrowserRouter>
-              <MainLayout />
-            </BrowserRouter>
+            <FileCacheProvider>
+              <UploadApiProvider>
+                <BrowserRouter>
+                  <MainLayout />
+                </BrowserRouter>
+              </UploadApiProvider>
+            </FileCacheProvider>
           </AuthProvider>
         </SnackbarProvider>
       </ThemeProvider>

@@ -14,7 +14,7 @@ import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import StatusIcon from "./StatusIcon.tsx";
 import {useUploadApi} from "../../../_middleware/uploadApi2/UploadApiContext.ts";
-import {usePagination} from "../../../_middleware/Explorer/Pagination/PaginationContext.ts";
+import {usePagination} from "../../../_middleware/(Explorer)/Pagination/PaginationContext.ts";
 import Tooltip from "@mui/material/Tooltip";
 
 const LINE_HEIGHT = 60;
@@ -64,7 +64,7 @@ export default function UploadHelper() {
                 component={motion.div}
                 animate={{
                     opacity: detail ? 1 : 0,
-                    y: detail ? 0 : 120
+                    y: detail ? 0 : 400,
                 }}
             >
                 <Box

@@ -2,7 +2,6 @@ import {ReactNode, useCallback, useEffect, useRef, useState} from "react";
 import {SuccessListener, UploadApiContext, UploadHistory, UploadRequest} from "./UploadApiContext.ts";
 import {enqueueSnackbar} from "notistack";
 import {R} from "../../../../_lib/definitions.ts";
-import {useDriverInfo} from "../../_lib/driverInfo/DriverInfoContext.ts";
 import {refreshableRequest} from "../../../../_lib/actions.ts";
 
 const CHUNK_SIZE = 1024 * 1024 - 1;
@@ -35,8 +34,6 @@ export default function Provider({children} : { children: ReactNode}) {
     const waitingQueue = useRef<UploadTask[]>([]);
     const aborted = useRef<boolean>(false);
     const successHandler = useRef<SuccessListener>(() => {});
-
-    const { refreshInfo } = useDriverInfo();
 
     useEffect(() => {
         md5Worker.current = new Worker(new URL("./md5Worker.js", import.meta.url));
@@ -202,7 +199,6 @@ export default function Provider({children} : { children: ReactNode}) {
                 updateHistory(task.id, {status: "finished", progress: 1});
                 enqueueSnackbar("one item uploaded successfully", {variant: "success"});
                 successHandler.current(task.id, task.folder);
-                refreshInfo();
             } catch (e) {
                 if (e instanceof AbortedError) {
                     updateHistory(task.id, {status: "cancelled", progress: 0});

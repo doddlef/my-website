@@ -10,10 +10,12 @@ import {useUploadApi} from "../../uploadApi2/UploadApiContext.ts";
 export default function PaginationProvider({children} : {children: React.ReactNode}) {
     const { onSuccess } = useUploadApi();
     const { rootFolder } = useDriverInfo().info;
+    const { refreshInfo } = useDriverInfo();
     const { cachePutItem } = useContentCache();
     const [searchParams] = useSearchParams();
 
     const [items, setItems] = useState<ItemView[]>([]);
+
     const folders = useMemo(() => items.filter(i => i.folder), [items]);
     const files = useMemo(() => items.filter(i => !i.folder), [items]);
 
@@ -51,15 +53,24 @@ export default function PaginationProvider({children} : {children: React.ReactNo
     useEffect(() => {
         onSuccess((_, folder) => {
             if (folder === currentFolder) refresh().then(() => console.log("upload refresh"));
+            refreshInfo();
         });
 
         return () => {
             onSuccess(() => {})
         }
-    }, [currentFolder, onSuccess, refresh]);
+    }, [currentFolder, onSuccess, refresh, refreshInfo]);
 
     return (
-        <PaginationContext.Provider value={{ currentFolder, items, folders, files, refresh, update }}>
+        <PaginationContext.Provider
+            value={{
+                currentFolder,
+                items,
+                folders,
+                files,
+                refresh,
+                update
+        }}>
             {children}
         </PaginationContext.Provider>
     );

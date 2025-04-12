@@ -59,3 +59,9 @@ export const createFolder = async (folder: number, name: string) => {
         body: JSON.stringify({folder, name}),
     }) as CreateFolderResult;
 }
+
+export const deleteItems = async (ids: number[]): Promise<R> => {
+    const params = new URLSearchParams();
+    ids.forEach(id => params.append("id", id.toString()));
+    return await refreshableRequest(`/api/driver/item?${params}`, { method: "DELETE" }) as R;
+}

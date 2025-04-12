@@ -1,25 +1,30 @@
-import React, {useCallback, useMemo, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import {usePagination} from "../../_middleware/Explorer/Pagination/PaginationContext.ts";
+import {usePagination} from "../../_middleware/(Explorer)/Pagination/PaginationContext.ts";
 import {ItemView} from "../../definations.ts";
 import {useNavigate} from "react-router-dom";
 import ObjectIcon from "./ObjectIcon.tsx";
 import ListContextMenu from "./Menu/ListContextMenu.tsx";
-import useSelected from "../../_middleware/Explorer/Selected/SelectedContext.ts";
+import useSelected from "../../_middleware/Selected/SelectedContext.ts";
 import ItemContextMenu from "./Menu/ItemContextMenu.tsx";
-
-type ViewMethod = "grid" | "list";
+import useViewState from "../../_middleware/viewState/useViewState.ts";
+import TableContainer from "@mui/material/TableContainer";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import ObjectRow from "./ObjectRow.tsx";
 
 export default function ItemList() {
-    const { folders, files } = usePagination();
+    const { items, folders, files } = usePagination();
+    const { viewMethod } = useViewState();
 
     const navigate = useNavigate();
 
     const { clear } = useSelected();
-
-    const [method, setMethod] = useState<ViewMethod>("grid");
 
     const [menuPosition, setMenuPosition] = useState<{x: number, y: number} | null>(null);
     const openContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -43,17 +48,15 @@ export default function ItemList() {
     const handleItemMenuClose = useCallback(() => {
         setItemMenuEl(null);
     }, []);
-    const itemMenu = useCallback((e: React.MouseEvent<HTMLElement>) => {
-        setItemMenuEl(e.currentTarget);
+    const itemMenu = useCallback((anchor: HTMLElement) => {
+        setItemMenuEl(anchor);
     }, [])
 
-
-
     const gridView = useMemo(() => (
-        <Grid className={"p-4 overflow-x-hidden pb-24"} container spacing={3}>
+        <Grid className={"p-4 overflow-x-hidden"} container spacing={3}>
             {folders.length > 0 && (
                 <Grid size={12}>
-                    <Typography variant={"subtitle2"} color={"textSecondary"}>
+                    <Typography variant={"subtitle1"} color={"textSecondary"}>
                         folders
                     </Typography>
                 </Grid>
@@ -65,7 +68,7 @@ export default function ItemList() {
             ))}
             {files.length > 0 && (
                 <Grid size={12}>
-                    <Typography variant={"subtitle2"} color={"textSecondary"}>
+                    <Typography variant={"subtitle1"} color={"textSecondary"}>
                         files
                     </Typography>
                 </Grid>
@@ -78,25 +81,55 @@ export default function ItemList() {
         </Grid>
     ), [folders, files, navigate, itemMenu]);
 
+    const listView = useMemo(() => (
+        <TableContainer>
+            <Table className={"min-w-full"} stickyHeader sx={{ tableLayout: "fixed", width: "100%" }}>
+                <TableHead>
+                    <TableRow>
+                        <TableCell sx={{width: "5%"}}/>
+                        <TableCell sx={{ width: '5%' }}/>
+                        <TableCell sx={{ width: '45%'}} align={"left"}>name</TableCell>
+                        <TableCell sx={{ width: '10%' }}/>
+                        <TableCell align={"left"} sx={{ width: '20%' }}>last edited</TableCell>
+                        <TableCell align={"left"} sx={{ width: '15%' }}>size</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {folders.map((folder: ItemView) =>
+                        <ObjectRow key={folder.id} item={folder} navigate={navigate} itemMenu={itemMenu} />
+                    )}
+                    {files.map((file: ItemView) =>
+                        <ObjectRow key={file.id} item={file} navigate={navigate} itemMenu={itemMenu} />
+                    )}
+                </TableBody>
+            </Table>
+        </TableContainer>
+    ), [files, folders, itemMenu, navigate])
+
     const emptyView = useMemo(() => (
-        <div className={"w-full h-full flex items-center justify-center overflow-hidden"}>
-            
+        <div className={"p-4 overflow-x-hidden flex w-full justify-center items-center"}>
+            <Typography color={"textSecondary"}>No items yet</Typography>
         </div>
     ), [])
 
+    useEffect(() => {
+        clear();
+    }, [clear, items])
+
     return (
         <Box
-            className={"w-full max-w-full max-h-full p-4 overflow-y-auto"}
+            className={"w-full max-w-full flex-1 overflow-y-auto pb-20"}
             onClick={clear}
             onContextMenu={e => {
                 e.preventDefault();
+                e.stopPropagation();
                 clear();
                 openContextMenu(e);
             }}
         >
             { folders.length === 0 && files.length === 0 && emptyView }
-            {/*{ method === "list" && listView }*/}
-            { method === "grid" && gridView}
+            { viewMethod === "list" && listView }
+            { viewMethod === "grid" && gridView}
             <ListContextMenu menuPosition={menuPosition} handleClose={closeContextMenu} />
             <ItemContextMenu open={itemMenuOpen} onClose={handleItemMenuClose} anchorEl={itemMenuEl} navigate={navigate} />
         </Box>
