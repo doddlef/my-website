@@ -50,6 +50,10 @@ export default function PaginationProvider({children} : {children: React.ReactNo
         setItems(prev => prev.map(i => i.id === id ? {...i, ...change } : i));
     }, [])
 
+    const remove = useCallback((id: number) => {
+        setItems(prev => prev.filter(i => i.id !== id));
+    }, []);
+
     useEffect(() => {
         onSuccess((_, folder) => {
             if (folder === currentFolder) refresh().then(() => console.log("upload refresh"));
@@ -69,7 +73,8 @@ export default function PaginationProvider({children} : {children: React.ReactNo
                 folders,
                 files,
                 refresh,
-                update
+                update,
+                remove,
         }}>
             {children}
         </PaginationContext.Provider>

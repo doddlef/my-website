@@ -5,6 +5,8 @@ import MainLayout from "./main/MainLayout.tsx";
 import {AuthProvider} from "./_component/accountProvider/AuthProvider.tsx";
 import UploadApiProvider from "./main/driver_v2/_middleware/uploadApi2/UploadApiProvider.tsx";
 import FileCacheProvider from "./main/driver_v2/_middleware/fileCache/FileCacheProvider.tsx";
+import {DndProvider} from "react-dnd";
+import {HTML5Backend} from "react-dnd-html5-backend";
 
 const theme = createTheme({
   colorSchemes: {
@@ -43,9 +45,11 @@ function App() {
           <AuthProvider autoLogin={true}>
             <FileCacheProvider>
               <UploadApiProvider>
-                <BrowserRouter>
-                  <MainLayout />
-                </BrowserRouter>
+                <DndProvider backend={HTML5Backend}>
+                  <BrowserRouter>
+                    <MainLayout />
+                  </BrowserRouter>
+                </DndProvider>
               </UploadApiProvider>
             </FileCacheProvider>
           </AuthProvider>

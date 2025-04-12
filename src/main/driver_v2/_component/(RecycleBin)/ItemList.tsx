@@ -6,9 +6,9 @@ import {BinItemView} from "../../definations.ts";
 import {useCallback, useMemo, useState} from "react";
 import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
-import ObjectIcon from "./ObjectIcon.tsx";
 import useSelected from "../../_middleware/Selected/SelectedContext.ts";
 import RecycleMenu from "./RecycleMenu.tsx";
+import ObjectWrapper from "./ObjectWrapper.tsx";
 
 dayjs.extend(isToday);
 dayjs.extend(isYesterday);
@@ -47,34 +47,38 @@ export default function ItemList() {
     }, [])
 
     return (
-        <Grid
-            container
-            className={"w-full p-4 pb-24"}
-            spacing={2}
+        <div
+            className={"w-full min-h-full"}
             onClick={(e) => {
                 e.stopPropagation();
                 clear();
             }}
         >
-            {Object.entries(grouped)
-                .sort((a, b) => {
-                    const dateA = dayjs(a[1][0].deletedAt);
-                    const dateB = dayjs(b[1][0].deletedAt);
-                    return dateB.valueOf() - dateA.valueOf(); // Newest first
-                })
-                .map(([date, items]) => (
-                    <>
-                        <Grid key={`header_${date}`} size={12}>
-                            <Typography variant="h6">{date}</Typography>
-                        </Grid>
-                        {items.map((item) => (
-                            <Grid key={`item_${item.id}`} size={3}>
-                                <ObjectIcon item={item} itemMenu={itemMenu} />
+            <Grid
+                container
+                className={"w-full p-4 pb-24"}
+                spacing={2}
+            >
+                {Object.entries(grouped)
+                    .sort((a, b) => {
+                        const dateA = dayjs(a[1][0].deletedAt);
+                        const dateB = dayjs(b[1][0].deletedAt);
+                        return dateB.valueOf() - dateA.valueOf(); // Newest first
+                    })
+                    .map(([date, items]) => (
+                        <>
+                            <Grid key={`header_${date}`} size={12}>
+                                <Typography variant="h6">{date}</Typography>
                             </Grid>
-                        ))}
-                    </>
-                ))}
-            <RecycleMenu open={itemMenuOpen} onClose={handleItemMenuClose} anchorEl={itemMenuEl} />
-        </Grid>
+                            {items.map((item) => (
+                                <Grid key={`item_${item.id}`} size={3}>
+                                    <ObjectWrapper item={item} itemMenu={itemMenu} />
+                                </Grid>
+                            ))}
+                        </>
+                    ))}
+                <RecycleMenu open={itemMenuOpen} onClose={handleItemMenuClose} anchorEl={itemMenuEl} />
+            </Grid>
+        </div>
     );
 }

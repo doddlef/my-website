@@ -65,3 +65,13 @@ export const deleteItems = async (ids: number[]): Promise<R> => {
     ids.forEach(id => params.append("id", id.toString()));
     return await refreshableRequest(`/api/driver/item?${params}`, { method: "DELETE" }) as R;
 }
+
+export const moveItems = async (items: number[], folder: number) => {
+    return await refreshableRequest(`/api/driver/move`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({items, folder}),
+    }) as R;
+}

@@ -5,7 +5,6 @@ import Box from "@mui/material/Box";
 import {usePagination} from "../../_middleware/(Explorer)/Pagination/PaginationContext.ts";
 import {ItemView} from "../../definations.ts";
 import {useNavigate} from "react-router-dom";
-import ObjectIcon from "./ObjectIcon.tsx";
 import ListContextMenu from "./Menu/ListContextMenu.tsx";
 import useSelected from "../../_middleware/Selected/SelectedContext.ts";
 import ItemContextMenu from "./Menu/ItemContextMenu.tsx";
@@ -17,9 +16,10 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import ObjectRow from "./ObjectRow.tsx";
+import ObjectWrapper from "./ObjectWrapper.tsx";
 
 export default function ItemList() {
-    const { items, folders, files } = usePagination();
+    const { items, folders, files, remove } = usePagination();
     const { viewMethod } = useViewState();
 
     const navigate = useNavigate();
@@ -63,7 +63,7 @@ export default function ItemList() {
             )}
             {folders.map((folder: ItemView) => (
                 <Grid size={3} key={folder.id}>
-                    <ObjectIcon item={folder} navigate={navigate} itemMenu={itemMenu} />
+                    <ObjectWrapper item={folder} navigate={navigate} itemMenu={itemMenu} removeItem={remove}/>
                 </Grid>
             ))}
             {files.length > 0 && (
@@ -75,7 +75,7 @@ export default function ItemList() {
             )}
             {files.map((file: ItemView) => (
                 <Grid size={3} key={file.id}>
-                    <ObjectIcon item={file} navigate={navigate} itemMenu={itemMenu} />
+                    <ObjectWrapper item={file} navigate={navigate} itemMenu={itemMenu} removeItem={remove}/>
                 </Grid>
             ))}
         </Grid>
@@ -118,7 +118,7 @@ export default function ItemList() {
 
     return (
         <Box
-            className={"w-full max-w-full flex-1 overflow-y-auto pb-20"}
+            className={"w-full min-h-full pb-20"}
             onClick={clear}
             onContextMenu={e => {
                 e.preventDefault();

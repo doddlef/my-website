@@ -18,25 +18,27 @@ const BreadcrumbsHeader = () => {
     }, [currentFolder, getPath]);
 
     return (
-        <Breadcrumbs aria-label="breadcrumb">
-            {breadcrumbs.map((b) => (
-                <Link
-                    key={b.id}
-                    component="button"
-                    onClick={() => {
-                        if (b.id !== currentFolder) navigate(b.url);
-                    }}
-                    sx={{
-                        color: b.id === currentFolder ? "text.primary" : "text.secondary",
-                        textDecoration: "none",
-                        cursor: b.id === currentFolder ? "default" : "pointer",
-                        fontSize: "1.3rem"
-                    }}
-                >
-                    {b.name}
-                </Link>
-            ))}
-        </Breadcrumbs>
+        <div className={"flex-1 pl-4"}>
+            <Breadcrumbs aria-label="breadcrumb">
+                {breadcrumbs.map((b) => (
+                    <Link
+                        key={b.id}
+                        component="button"
+                        onClick={() => {
+                            if (b.id !== currentFolder) navigate(b.url);
+                        }}
+                        sx={{
+                            color: b.id === currentFolder ? "text.primary" : "text.secondary",
+                            textDecoration: "none",
+                            cursor: b.id === currentFolder ? "default" : "pointer",
+                            fontSize: "1.3rem"
+                        }}
+                    >
+                        {b.name}
+                    </Link>
+                ))}
+            </Breadcrumbs>
+        </div>
     );
 }
 

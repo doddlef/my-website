@@ -1,7 +1,7 @@
 import {BinItemView} from "../../definations.ts";
 import Paper from "@mui/material/Paper";
 import useSelected from "../../_middleware/Selected/SelectedContext.ts";
-import {useMemo} from "react";
+import React, {useCallback, useMemo} from "react";
 import {formatFileSize, formatSmartDate, getViewPicture} from "../../_lib/utils.ts";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
@@ -18,15 +18,27 @@ export default function ObjectIcon({item, itemMenu} : ObjectIconProps) {
     const { select, selected, add } = useSelected();
     const isSelected = useMemo(() => selected.some(i => i.id === item.id), [item.id, selected]);
 
+    const handleMenuClick = useCallback((e: React.MouseEvent<HTMLElement>) => {
+        e.stopPropagation();
+        e.preventDefault();
+        select(item);
+        itemMenu(e.currentTarget);
+    }, [item, itemMenu, select])
+
     return (
         <Paper
-            elevation={2}
+            role="button"
+            tabIndex={0}
             sx={{
-                borderRadius: 4,
+                borderRadius: 2,
                 bgcolor: "background.default",
                 color: "text.primary",
                 padding: 2,
                 position: "relative",
+                outline: "none",
+                borderWidth: "1px",
+                borderColor: "transparent",
+                "&:focus": {borderColor: "primary.main"},
             }}
             className={"cursor-pointer"}
 
@@ -36,25 +48,15 @@ export default function ObjectIcon({item, itemMenu} : ObjectIconProps) {
                 else select(item);
             }}
 
-            onContextMenu={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                select(item);
-                itemMenu(e.currentTarget);
-            }}
+            onContextMenu={handleMenuClick}
         >
             <div className={"absolute top-4 left-4"}>
                 {isSelected && <CheckCircleOutlineIcon fontSize={"medium"} color={"primary"}/>}
             </div>
             <div className={"absolute top-4 right-4"}>
                 <IconButton
-                    onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation()
-                        select(item);
-                        itemMenu(e.currentTarget);
-                    }}
-                    disabled={isSelected}
+                    onClick={handleMenuClick}
+                    disabled={selected.length > 0}
                 >
                     <MoreVertIcon/>
                 </IconButton>

@@ -8,6 +8,7 @@ interface PaginationContextType {
     files: ItemView[];
     refresh: () => void;
     update: (id: number, change: Partial<ItemView>) => void;
+    remove: (id: number) => void;
 }
 
 export const PaginationContext = createContext<PaginationContextType | undefined>(undefined);

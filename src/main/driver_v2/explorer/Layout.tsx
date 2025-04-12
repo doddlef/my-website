@@ -3,7 +3,6 @@ import SelectedProvider from "../_middleware/Selected/SelectedProvider.tsx";
 import Modals from "../_component/(Explorer)/Modal/Modals.tsx";
 import BreadcrumbsHeader from "../_component/(Explorer)/BreadcrumbsHeader.tsx";
 import ItemList from "../_component/(Explorer)/ItemList.tsx";
-import Stack from "@mui/material/Stack";
 import ModalsProvider from "../_middleware/useModals/ModalsProvider.tsx";
 import ItemPreview from "../_component/(Explorer)/preview/Previews.tsx";
 import ViewHeader from "../_component/(Explorer)/ViewHeader.tsx";
@@ -16,15 +15,16 @@ export default function Layout() {
                 <ModalsProvider>
                     <ItemPreview>
                         <Modals />
-                        <Stack
-                            spacing={2}
-                            className={"w-full h-full relative overflow-hidden"}
-                        >
-                            <BreadcrumbsHeader />
-                            <ViewHeader />
-                            <ItemList />
-                        </Stack>
-                        <UploadHelperWrapper />
+                        <div className={"w-full h-full flex flex-col"}>
+                            <div className={"flex w-full items-center"}>
+                                <BreadcrumbsHeader />
+                                <ViewHeader />
+                            </div>
+                            <div className="flex-1 min-h-0 overflow-y-auto">
+                                <ItemList />
+                            </div>
+                        </div>
+                        <UploadHelperWrapper/>
                     </ItemPreview>
                 </ModalsProvider>
             </SelectedProvider>

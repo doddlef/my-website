@@ -10,8 +10,8 @@ const SelectedProvider: React.FC<{ children: React.ReactNode }> = ({ children })
     }, [])
 
     const add = useCallback((item: ItemView) => {
-        setSelected(prev => [ ...prev, item]);
-    }, [])
+        if (!selected.some(i => i.id === item.id)) setSelected(prev => [ ...prev, item]);
+    }, [selected])
 
     const deselect = useCallback((id: number) => {
         setSelected(prev => prev.filter((i) => i.id !== id));

@@ -14,7 +14,7 @@ export default function Layout() {
                 <ModalsProvider>
                     <Stack
                         spacing={2}
-                        className={"w-full h-full relative overflow-hidden"}
+                        className={"w-full h-full"}
                     >
                         <RecycleHeader />
                         <div className={"flex-1 overflow-y-auto"}>

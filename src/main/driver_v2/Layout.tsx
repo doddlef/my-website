@@ -48,12 +48,12 @@ export default function Layout() {
                 <ViewStateProvider>
                     <Box
                         sx={{bgcolor: "background.default", color: "text.primary"}}
-                        className={"w-screen h-screen overflow-hidden flex"}
+                        className={"w-screen h-screen flex max-h-screen"}
                     >
                         <NavSideBar />
-                        <Box className={"flex-1 h-screen overflow-hidden"}>
+                        <Box className={"flex-1 h-screen flex flex-col"}>
                             <NavHeader />
-                            <div className={"w-full h-full bg-[rgb(239,244,251)] dark:bg-[rgb(43,54,66)] rounded-tl-3xl p-4"}>
+                            <div className={"w-full flex-1 bg-[rgb(239,244,251)] dark:bg-[rgb(43,54,66)] rounded-tl-3xl p-4 pb-0 overflow-hidden"}>
                                 <Routes>
                                     <Route index element={<Explorer/>} />
                                     <Route path={"/bin"} element={<RecycleBin />} />

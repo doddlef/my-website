@@ -51,10 +51,8 @@ export default function ViewHeader() {
     ), [changeModal, clear, selected.length])
 
     return (
-        <header className={"w-full flex items-center pl-4 pr-8 gap-16 h-12"}>
-            <div className={"flex-1"}>
-                {selected.length > 0 && editBar}
-            </div>
+        <header className={"flex items-center pl-4 pr-8 gap-16 h-14 mb-3 mt-3"}>
+            {selected.length > 0 && editBar}
             <ToggleButtonGroup
                 value={viewMethod}
                 exclusive
