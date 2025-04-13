@@ -46,11 +46,15 @@ export default function RecycleMenu({open, onClose, anchorEl}: RecycleMenuProps)
             sx={{'& .MuiPaper-root': {width: 260}}}
         >
             <MenuList>
-                <MenuItem onClick={handleRestore}>
+                <MenuItem onClick={(e) => {
+                    e.stopPropagation();
+                    handleRestore();
+                }}>
                     <ListItemIcon><RestoreIcon /></ListItemIcon>
                     <ListItemText>restore</ListItemText>
                 </MenuItem>
-                <MenuItem onClick={() => {
+                <MenuItem onClick={(e) => {
+                    e.stopPropagation();
                     changeModal("delete_forever");
                     onClose();
                 }}>

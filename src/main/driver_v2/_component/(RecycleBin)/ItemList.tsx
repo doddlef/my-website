@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import isToday from "dayjs/plugin/isToday";
 import isYesterday from "dayjs/plugin/isYesterday";
 import {BinItemView} from "../../definations.ts";
-import {useCallback, useMemo, useState} from "react";
+import React, {useCallback, useMemo, useState} from "react";
 import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
 import useSelected from "../../_middleware/Selected/SelectedContext.ts";
@@ -66,7 +66,7 @@ export default function ItemList() {
                         return dateB.valueOf() - dateA.valueOf(); // Newest first
                     })
                     .map(([date, items]) => (
-                        <>
+                        <React.Fragment key={date}>
                             <Grid key={`header_${date}`} size={12}>
                                 <Typography variant="h6">{date}</Typography>
                             </Grid>
@@ -75,7 +75,7 @@ export default function ItemList() {
                                     <ObjectWrapper item={item} itemMenu={itemMenu} />
                                 </Grid>
                             ))}
-                        </>
+                        </React.Fragment>
                     ))}
                 <RecycleMenu open={itemMenuOpen} onClose={handleItemMenuClose} anchorEl={itemMenuEl} />
             </Grid>

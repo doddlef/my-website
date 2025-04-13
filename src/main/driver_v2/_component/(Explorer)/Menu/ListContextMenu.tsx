@@ -10,6 +10,7 @@ import useModals from "../../../_middleware/useModals/ModalsContext.ts";
 import {ChangeEvent, useCallback, useRef} from "react";
 import {useUploadApi} from "../../../_middleware/uploadApi2/UploadApiContext.ts";
 import {usePagination} from "../../../_middleware/(Explorer)/Pagination/PaginationContext.ts";
+import {enqueueSnackbar} from "notistack";
 
 export type MainContextMenuProps = {
     menuPosition: { y: number; x: number } | null;
@@ -27,11 +28,13 @@ export default function ListContextMenu({menuPosition, handleClose} : MainContex
     }, []);
 
     const handleFileChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (file) {
-            upload({file: file, folder: currentFolder})
-                .then(() => console.log('adding into queue'))
-                .catch(console.error);
+        const files = event.target.files;
+        if (files?.length && currentFolder) {
+            Array.from(files).forEach(file => {
+                upload({ file, folder: currentFolder }).then(() => console.log(`Added ${file.name} to queue`));
+            });
+        } else {
+            enqueueSnackbar("Must specify a folder", { variant: "error" });
         }
         event.target.value = "";
     }, [currentFolder, upload]);
@@ -72,7 +75,13 @@ export default function ListContextMenu({menuPosition, handleClose} : MainContex
                     </MenuItem>
                 </MenuList>
             </Menu>
-            <input type={"file"} className={"hidden"} ref={fileInputRef} onChange={handleFileChange}/>
+            <input
+                type="file"
+                className="hidden"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                multiple
+            />
         </>
     );
 }

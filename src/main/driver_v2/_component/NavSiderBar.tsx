@@ -33,7 +33,7 @@ export default function NavSideBar() {
             <div className={"w-full p-4 flex flex-col gap-1 items-center"}>
                 <img src={"/icon/cloud.svg"} className={"w-1/2"} alt={""}/>
                 <Typography variant={"h6"} color={"primary"}>
-                    Cloud Driver(r)
+                    Cloud Drive(r)
                 </Typography>
             </div>
             <Divider />

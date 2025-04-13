@@ -6,7 +6,9 @@ interface PaginationContextType {
     items: ItemView[];
     folders: ItemView[];
     files: ItemView[];
-    refresh: () => void;
+    refresh: () => Promise<void>;
+    hasMore: boolean;
+    loadMore: () => Promise<void>;
     update: (id: number, change: Partial<ItemView>) => void;
     remove: (id: number) => void;
 }

@@ -9,21 +9,22 @@ type ObjectIconProps = {
 }
 
 export default function ObjectWrapper({item, itemMenu} : ObjectIconProps) {
-    const { select, selected, add } = useSelected();
+    const { select, selected, add, deselect } = useSelected();
     const isSelected = useMemo(() => selected.some(i => i.id === item.id), [item.id, selected]);
 
-    const handleClick = useCallback((e : React.MouseEvent<HTMLElement>) => {
+    const handleClick = (e : React.MouseEvent<HTMLElement>) => {
         e.stopPropagation();
-        if (e.ctrlKey || e.metaKey) add(item)
-        else select(item);
-    }, [add, item, select])
+        if (e.ctrlKey || e.metaKey) {
+            if (isSelected) deselect(item.id);
+            else add(item);
+        } else select(item);
+    }
 
     const handleContextMenu = useCallback((e: React.MouseEvent<HTMLElement>) => {
         e.stopPropagation();
         e.preventDefault();
-        select(item);
         itemMenu(e.currentTarget);
-    }, [item, itemMenu, select])
+    }, [itemMenu])
 
     return (
         <ObjectIcon

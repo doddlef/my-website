@@ -23,19 +23,23 @@ type ObjectIconProps = {
 };
 
 export default function ObjectWrapper({ item, navigate, itemMenu, removeItem }: ObjectIconProps) {
-    const { selected, select, add, deselect } = useSelected();
+    const { selected, select, add, deselect, clear } = useSelected();
     const { previewFile } = useItemPreview();
     const isSelected = useMemo(() => selected.some(i => i.id === item.id), [item.id, selected]);
 
     const handleClick = (e: React.MouseEvent) => {
         e.stopPropagation();
-        if (e.ctrlKey || e.metaKey) add(item);
+        if (e.ctrlKey || e.metaKey) {
+            if (isSelected) deselect(item.id);
+            else add(item);
+        }
         else select(item);
     };
 
     const handleDoubleClick = () => {
         if (item.folder) navigate(`/driver?folder=${item.id}`);
         else previewFile(item.id);
+        clear();
     };
 
     const handleContextMenu = (e: React.MouseEvent<HTMLElement>) => {
@@ -78,7 +82,7 @@ export default function ObjectWrapper({ item, navigate, itemMenu, removeItem }: 
     const [, dropRef] = useDrop<DragItem>({
         accept: DRAG_TYPE,
         drop: (dragged) => {
-            if (dragged.id !== item.id) {
+            if (dragged.id !== item.id && item.folder) {
                 handleMove(dragged.id, item.id);
             }
         },

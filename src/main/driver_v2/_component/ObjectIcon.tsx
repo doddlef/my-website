@@ -50,7 +50,9 @@ export default function ObjectIcon({
 
     return (
         <Paper
-            component="button"
+            component="div"
+            tabIndex={0}
+            role="button"
             sx={{
                 borderRadius: 2,
                 bgcolor: "background.default",
@@ -86,7 +88,7 @@ export default function ObjectIcon({
 
             {/* Menu */}
             <div className="absolute top-2 right-2">
-                <IconButton size="small" onClick={handleMenuClick} disabled={disableEditIcon}>
+                <IconButton size="small" onClick={handleMenuClick} disabled={disableEditIcon} tabIndex={-1}>
                     <MoreVertIcon fontSize="small" />
                 </IconButton>
             </div>

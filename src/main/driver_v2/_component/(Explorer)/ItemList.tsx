@@ -1,29 +1,16 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
-import Grid from "@mui/material/Grid2";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import {usePagination} from "../../_middleware/(Explorer)/Pagination/PaginationContext.ts";
-import {ItemView} from "../../definations.ts";
 import {useNavigate} from "react-router-dom";
 import ListContextMenu from "./Menu/ListContextMenu.tsx";
 import useSelected from "../../_middleware/Selected/SelectedContext.ts";
 import ItemContextMenu from "./Menu/ItemContextMenu.tsx";
-import useViewState from "../../_middleware/viewState/useViewState.ts";
-import TableContainer from "@mui/material/TableContainer";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import ObjectRow from "./ObjectRow.tsx";
-import ObjectWrapper from "./ObjectWrapper.tsx";
+import GridView from "./ListView/GridView.tsx";
 
 export default function ItemList() {
-    const { items, folders, files, remove } = usePagination();
-    const { viewMethod } = useViewState();
-
+    const { folders, files, remove, hasMore, loadMore, currentFolder } = usePagination();
     const navigate = useNavigate();
-
     const { clear } = useSelected();
 
     const [menuPosition, setMenuPosition] = useState<{x: number, y: number} | null>(null);
@@ -50,61 +37,28 @@ export default function ItemList() {
     }, []);
     const itemMenu = useCallback((anchor: HTMLElement) => {
         setItemMenuEl(anchor);
-    }, [])
+    }, []);
 
-    const gridView = useMemo(() => (
-        <Grid className={"p-4 overflow-x-hidden"} container spacing={3}>
-            {folders.length > 0 && (
-                <Grid size={12}>
-                    <Typography variant={"subtitle1"} color={"textSecondary"}>
-                        folders
-                    </Typography>
-                </Grid>
-            )}
-            {folders.map((folder: ItemView) => (
-                <Grid size={3} key={folder.id}>
-                    <ObjectWrapper item={folder} navigate={navigate} itemMenu={itemMenu} removeItem={remove}/>
-                </Grid>
-            ))}
-            {files.length > 0 && (
-                <Grid size={12}>
-                    <Typography variant={"subtitle1"} color={"textSecondary"}>
-                        files
-                    </Typography>
-                </Grid>
-            )}
-            {files.map((file: ItemView) => (
-                <Grid size={3} key={file.id}>
-                    <ObjectWrapper item={file} navigate={navigate} itemMenu={itemMenu} removeItem={remove}/>
-                </Grid>
-            ))}
-        </Grid>
-    ), [folders, files, navigate, itemMenu]);
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-    const listView = useMemo(() => (
-        <TableContainer>
-            <Table className={"min-w-full"} stickyHeader sx={{ tableLayout: "fixed", width: "100%" }}>
-                <TableHead>
-                    <TableRow>
-                        <TableCell sx={{width: "5%"}}/>
-                        <TableCell sx={{ width: '5%' }}/>
-                        <TableCell sx={{ width: '45%'}} align={"left"}>name</TableCell>
-                        <TableCell sx={{ width: '10%' }}/>
-                        <TableCell align={"left"} sx={{ width: '20%' }}>last edited</TableCell>
-                        <TableCell align={"left"} sx={{ width: '15%' }}>size</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {folders.map((folder: ItemView) =>
-                        <ObjectRow key={folder.id} item={folder} navigate={navigate} itemMenu={itemMenu} />
-                    )}
-                    {files.map((file: ItemView) =>
-                        <ObjectRow key={file.id} item={file} navigate={navigate} itemMenu={itemMenu} />
-                    )}
-                </TableBody>
-            </Table>
-        </TableContainer>
-    ), [files, folders, itemMenu, navigate])
+    useEffect(() => {
+        const container = scrollContainerRef.current;
+        if (!container) return;
+
+        const onScroll = () => {
+            if (!container) return;
+
+            const { scrollTop, scrollHeight, clientHeight } = container;
+            const isNearBottom = scrollHeight - scrollTop - clientHeight < 200;
+
+            if (isNearBottom && hasMore) {
+                loadMore().catch(console.error);
+            }
+        };
+
+        container.addEventListener("scroll", onScroll);
+        return () => container.removeEventListener("scroll", onScroll);
+    }, [loadMore, hasMore]);
 
     const emptyView = useMemo(() => (
         <div className={"p-4 overflow-x-hidden flex w-full justify-center items-center"}>
@@ -114,11 +68,12 @@ export default function ItemList() {
 
     useEffect(() => {
         clear();
-    }, [clear, items])
+    }, [clear, currentFolder])
 
     return (
         <Box
-            className={"w-full min-h-full pb-20"}
+            ref={scrollContainerRef}
+            className={"w-full min-h-full h-full pb-20 overflow-y-auto"}
             onClick={clear}
             onContextMenu={e => {
                 e.preventDefault();
@@ -128,8 +83,13 @@ export default function ItemList() {
             }}
         >
             { folders.length === 0 && files.length === 0 && emptyView }
-            { viewMethod === "list" && listView }
-            { viewMethod === "grid" && gridView}
+            <GridView
+                folders={folders}
+                files={files}
+                navigate={navigate}
+                itemMenu={itemMenu}
+                remove={remove}
+            />
             <ListContextMenu menuPosition={menuPosition} handleClose={closeContextMenu} />
             <ItemContextMenu open={itemMenuOpen} onClose={handleItemMenuClose} anchorEl={itemMenuEl} navigate={navigate} />
         </Box>

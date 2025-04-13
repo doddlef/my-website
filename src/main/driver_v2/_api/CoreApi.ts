@@ -20,18 +20,43 @@ type ItemApiResult = R & {
     };
 };
 
-type ContentApiResult = R & {
-    fields: {
-        list: ItemView[];
-    };
-};
-
 export const itemApi = async (id: number): Promise<ItemApiResult> => {
     return await refreshableRequest(`/api/driver/item/${id}`, { method: "GET" }) as ItemApiResult;
 };
 
-export const contentApi = async (id: number): Promise<ContentApiResult> => {
-    return await refreshableRequest(`/api/driver/children/${id}`, { method: "GET" }) as ContentApiResult;
+export type ContentSearchParams = {
+    offset?: number;
+    limit?: number;
+    sortBy?: "name" | "size" | "editedAt";
+    direction?: "ASC" | "DESC";
+};
+
+type ContentApiResult = R & {
+    fields: {
+        list: ItemView[];
+        hasNext: boolean;
+    };
+};
+
+export const contentApi = async (
+    id: number,
+    params?: ContentSearchParams
+): Promise<ContentApiResult> => {
+    const searchParams = new URLSearchParams();
+
+    if (params) {
+        Object.entries(params).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) {
+                searchParams.append(key, value.toString());
+            }
+        });
+    }
+
+    const response = await refreshableRequest(`/api/driver/children/${id}?${searchParams}`, {
+        method: "GET",
+    });
+
+    return response as ContentApiResult;
 };
 
 export const renameItem = async (id: number, name: string) => {

@@ -3,6 +3,7 @@ import {SuccessListener, UploadApiContext, UploadHistory, UploadRequest} from ".
 import {enqueueSnackbar} from "notistack";
 import {R} from "../../../../_lib/definitions.ts";
 import {refreshableRequest} from "../../../../_lib/actions.ts";
+import {debounce} from "lodash";
 
 const CHUNK_SIZE = 1024 * 1024 - 1;
 const MAX_RETRIES = 3;
@@ -173,12 +174,22 @@ export default function Provider({children} : { children: ReactNode}) {
         throw new Error(result.message);
     }, [updateHistory, uploadChunk, uploadChunkFinish]);
 
+    const addedCount = useRef(0);
+
     const processNext = useCallback(async () => {
         console.log("process start");
         // if processing, waiting in queue
         if (isProcessing.current) return;
         isProcessing.current = true;
         setRunning(true);
+
+        const reportSuccess = debounce(() => {
+            enqueueSnackbar(
+                `${addedCount.current} ${addedCount.current > 1 ? "items have" : "item has"} been uploaded successfully`,
+                { variant: "success" }
+            );
+            addedCount.current = 0;
+        }, 1000);
 
         const process = async () => {
             // load current task, and initialize
@@ -197,7 +208,8 @@ export default function Provider({children} : { children: ReactNode}) {
                 }
 
                 updateHistory(task.id, {status: "finished", progress: 1});
-                enqueueSnackbar("one item uploaded successfully", {variant: "success"});
+                addedCount.current++;
+                reportSuccess();
                 successHandler.current(task.id, task.folder);
             } catch (e) {
                 if (e instanceof AbortedError) {
