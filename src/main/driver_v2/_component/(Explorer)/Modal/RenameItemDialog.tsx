@@ -9,6 +9,7 @@ import Button from "@mui/material/Button";
 import {renameItem} from "../../../_api/CoreApi.ts";
 import useSelected from "../../../_middleware/Selected/SelectedContext.ts";
 import {usePagination} from "../../../_middleware/(Explorer)/Pagination/PaginationContext.ts";
+import useFolderTree from "../../../_middleware/folderTree/useFolderTree.ts";
 
 type RenameDialogProps = {
     open: boolean;
@@ -18,7 +19,8 @@ type RenameDialogProps = {
 export default function RenameItemDialog({open, handleClose}: RenameDialogProps) {
     const [name, setName] = useState<string>("");
     const { firstItem } = useSelected();
-    const { items, refresh } = usePagination();
+    const { items, update } = usePagination();
+    const updateFolderTree = useFolderTree().update;
 
     const onClose = useCallback(() => {
         setName("");
@@ -51,7 +53,8 @@ export default function RenameItemDialog({open, handleClose}: RenameDialogProps)
                     enqueueSnackbar("rename successfully", {
                         variant: "success",
                     });
-                    refresh();
+                    update(firstItem.id, {name: name});
+                    if (firstItem.folder) updateFolderTree(firstItem.id, {name: name});
                     onClose();
                 } else {
                     enqueueSnackbar(r.message, {
@@ -59,7 +62,7 @@ export default function RenameItemDialog({open, handleClose}: RenameDialogProps)
                     });
                 }
             })
-    }, [firstItem, items, name, onClose, refresh])
+    }, [firstItem, items, name, onClose, update, updateFolderTree])
 
     return (
         <Dialog open={open} onClose={onClose}

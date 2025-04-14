@@ -8,14 +8,7 @@ import {useDriverInfo} from "../../_lib/driverInfo/DriverInfoContext.ts";
 import {R} from "../../../../_lib/definitions.ts";
 import {refreshableRequest} from "../../../../_lib/actions.ts";
 import {itemApi} from "../../_api/CoreApi.ts";
-import {FolderTreeContext} from "./useFolderTree.ts";
-
-export type FolderLabel = {
-    id: number;
-    name: string;
-    folderId: number | null;
-    children?: number[];
-};
+import {FolderLabel, FolderTreeContext} from "./useFolderTree.ts";
 
 type FolderStructure = {
     [folderId: string]: FolderLabel;
@@ -27,7 +20,6 @@ type AllFolderResult = R & {
     };
 };
 
-// API call to get all folders
 const allFolderApi = async () => {
     return await refreshableRequest("/api/driver/all/folder", {method: 'GET'}) as AllFolderResult;
 };
@@ -35,8 +27,7 @@ const allFolderApi = async () => {
 export default function FolderTreeProvider({children}: {children: React.ReactNode}) {
     const {rootFolder} = useDriverInfo().info;
     const cache = useRef(new Map<number, FolderLabel>());
-
-    const forceUpdate = useState(0)[1];
+    const [map, setMap] = useState(new Map<number, FolderLabel>());
 
     const cachePut = useCallback((label: FolderLabel, map: Map<number, FolderLabel>) => {
         map.set(label.id, {
@@ -45,7 +36,7 @@ export default function FolderTreeProvider({children}: {children: React.ReactNod
         });
     }, [rootFolder]);
 
-    const refresh = useCallback(() => {
+    const refresh = useCallback(async () => {
         allFolderApi()
             .then(r => {
                 if (r.code === 0 && r.fields?.structure) {
@@ -54,13 +45,13 @@ export default function FolderTreeProvider({children}: {children: React.ReactNod
                         cachePut(label, newCache);
                     });
                     cache.current = newCache;
-                    forceUpdate(n => n + 1);
+                    setMap(newCache);
                 } else {
                     console.error(r.message);
                 }
             })
             .catch(console.error);
-    }, [cachePut, forceUpdate]);
+    }, [cachePut]);
 
     const getLabel = useCallback(async (id: number): Promise<FolderLabel | null> => {
         if (!id) return null;
@@ -76,6 +67,7 @@ export default function FolderTreeProvider({children}: {children: React.ReactNod
                 children: [],
             };
             cache.current.set(label.id, label);
+            setMap(cache.current);
             return label;
         }
         return null;
@@ -101,12 +93,19 @@ export default function FolderTreeProvider({children}: {children: React.ReactNod
         return path;
     }, [getLabel]);
 
+    const update = useCallback(async (id: number, changes: Partial<FolderLabel>) => {
+        const label = cache.current.get(id);
+        if (!label) return;
+        cache.current.set(id, {...label, ...changes });
+        setMap(cache.current);
+    }, []);
+
     useEffect(() => {
-        refresh();
+        refresh().catch(console.error);
     }, [refresh]);
 
     return (
-        <FolderTreeContext.Provider value={{getPath, getLabel, refresh, cache: cache.current}}>
+        <FolderTreeContext.Provider value={{getPath, getLabel, refresh, cache: map, update}}>
             {children}
         </FolderTreeContext.Provider>
     );

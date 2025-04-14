@@ -4,7 +4,7 @@ import {DriverInfo} from "../../definations.ts";
 
 type DriverInfoContextType = {
     info: DriverInfo;
-    refreshInfo: () => void;
+    refreshInfo: () => Promise<void>;
 }
 
 export const DriverInfoContext = createContext<DriverInfoContextType | null>(null);

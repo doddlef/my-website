@@ -14,8 +14,9 @@ export type FolderLabel = {
 type FolderTreeContextValue = {
     getLabel: (id: number) => Promise<FolderLabel | null>;
     getPath: (id: number) => Promise<FolderLabel[]>;
-    refresh: () => void;
+    refresh: () => Promise<void>;
     cache: Map<number, FolderLabel>;
+    update: (id: number, changes: Partial<FolderLabel>) => void;
 };
 
 // Create context

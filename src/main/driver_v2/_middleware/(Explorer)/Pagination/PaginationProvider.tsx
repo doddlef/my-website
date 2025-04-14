@@ -2,7 +2,6 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useSearchParams, useNavigate} from "react-router-dom";
 import {useDriverInfo} from "../../../_lib/driverInfo/DriverInfoContext.ts";
 import {ItemView} from "../../../definations.ts";
-import {useContentCache} from "../../ContentCache/ContentCache.ts";
 import {PaginationContext, PaginationInfo} from "./PaginationContext.ts";
 import {contentApi} from "../../../_api/CoreApi.ts";
 import {useUploadApi} from "../../uploadApi2/UploadApiContext.ts";
@@ -12,7 +11,6 @@ export default function PaginationProvider({children} : {children: React.ReactNo
     const { onSuccess } = useUploadApi();
     const { rootFolder } = useDriverInfo().info;
     const { refreshInfo } = useDriverInfo();
-    const { cachePutItem } = useContentCache();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
@@ -41,9 +39,6 @@ export default function PaginationProvider({children} : {children: React.ReactNo
         try {
             const result = await contentApi(currentFolder, {pageNum: page, pageSize: 80});
             if (result.code === 0) {
-                result.fields.list
-                    .filter(item => item.fileType === "FOLDER")
-                    .forEach(item => cachePutItem(item));
                 setItems(result.fields.list);
                 setPagination(result.fields.pagination);
             } else {
@@ -54,7 +49,7 @@ export default function PaginationProvider({children} : {children: React.ReactNo
             isLoading.current = false;
             setLoading(false);
         }
-    }, [cachePutItem, currentFolder, page]);
+    }, [currentFolder, page]);
 
     const changePage = useCallback((newPage: number) => {
         if (newPage < 1 || newPage > pagination.pageCount) return;

@@ -45,6 +45,7 @@ export const contentApi = async (
 ): Promise<ContentApiResult> => {
     const searchParams = new URLSearchParams();
 
+    if (id) searchParams.append("folder", id.toString());
     if (params) {
         Object.entries(params).forEach(([key, value]) => {
             if (value !== undefined && value !== null) {
@@ -53,7 +54,7 @@ export const contentApi = async (
         });
     }
 
-    const response = await refreshableRequest(`/api/driver/children/${id}?${searchParams}`, {
+    const response = await refreshableRequest(`/api/driver/items?${searchParams}`, {
         method: "GET",
     });
 

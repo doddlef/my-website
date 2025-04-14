@@ -5,10 +5,10 @@ import {getDriverInfo} from "./_api/CoreApi.ts";
 import {DriverInfoContext} from "./_lib/driverInfo/DriverInfoContext.ts";
 import Box from "@mui/material/Box";
 import NavHeader from "./_component/NavHeader.tsx";
-import NavSideBar from "./_component/NavSiderBar.tsx";
+import NavSideBar from "./_component/NavSideBar/NavSiderBar.tsx";
 import {Route, Routes} from "react-router-dom";
-import ContentCacheProvider from "./_middleware/ContentCache/ContentCacheProvider.tsx";
 import {ViewStateProvider} from "./_middleware/viewState/ViewStateProvider.tsx";
+import FolderTreeProvider from "./_middleware/folderTree/FolderTreeProvider.tsx";
 
 const Explorer = lazy(() => import("./explorer/Layout.tsx"));
 const RecycleBin = lazy(() => import("./recycleBin/Layout.tsx"));
@@ -44,7 +44,7 @@ export default function Layout() {
 
     return (
         <DriverInfoContext.Provider value={{ info, refreshInfo }}>
-            <ContentCacheProvider>
+            <FolderTreeProvider>
                 <ViewStateProvider>
                     <Box
                         sx={{color: "text.primary"}}
@@ -62,7 +62,7 @@ export default function Layout() {
                         </Box>
                     </Box>
                 </ViewStateProvider>
-            </ContentCacheProvider>
+            </FolderTreeProvider>
         </DriverInfoContext.Provider>
     )
 }

@@ -20,8 +20,8 @@ import {useItemPreview} from "../../../_middleware/(Explorer)/ItemPreview/ItemPr
 import {moveItems} from "../../../_api/CoreApi.ts";
 import {enqueueSnackbar} from "notistack";
 import React from "react";
-import {useContentCache} from "../../../_middleware/ContentCache/ContentCache.ts";
 import {usePagination} from "../../../_middleware/(Explorer)/Pagination/PaginationContext.ts";
+import useFolderTree from "../../../_middleware/folderTree/useFolderTree.ts";
 
 type ItemEditMenuProps = {
     open: boolean;
@@ -34,8 +34,9 @@ export default function ItemContextMenu({open, onClose, anchorEl, navigate}: Ite
     const { changeModal } = useModals();
     const { previewFile } = useItemPreview();
     const { clear, firstItem } = useSelected();
-    const { getLabel } = useContentCache();
+    const { getLabel } = useFolderTree();
     const { remove } = usePagination();
+    const { update } = useFolderTree();
 
     const handleMoveToParent = async (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -50,6 +51,9 @@ export default function ItemContextMenu({open, onClose, anchorEl, navigate}: Ite
                 if (r.code === 0) {
                     enqueueSnackbar(r.message, {variant: "success"});
                     remove(firstItem.id);
+                    if (firstItem.folder) {
+                        update(firstItem.id, {folderId: currentFolder.folderId});
+                    }
                 }
                 else enqueueSnackbar(r.message, {variant: "error"});
             })
@@ -57,6 +61,12 @@ export default function ItemContextMenu({open, onClose, anchorEl, navigate}: Ite
                 clear();
                 onClose();
             })
+    }
+
+    const handleMove = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        changeModal("move_item");
+        onClose();
     }
 
     const handleEnterOrPreview = async (e: React.MouseEvent) => {
@@ -111,7 +121,7 @@ export default function ItemContextMenu({open, onClose, anchorEl, navigate}: Ite
                             abc
                         </Typography>
                     </MenuItem>
-                    <MenuItem>
+                    <MenuItem onClick={handleMove}>
                         <ListItemIcon>
                             <DriveFileMoveIcon />
                         </ListItemIcon>

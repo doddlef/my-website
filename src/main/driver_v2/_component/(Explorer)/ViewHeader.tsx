@@ -7,10 +7,37 @@ import useModals from "../../_middleware/useModals/ModalsContext.ts";
 import Paper from "@mui/material/Paper";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
+import CachedIcon from '@mui/icons-material/Cached';
+import {useState} from "react";
+import {clsx} from "clsx";
+import {usePagination} from "../../_middleware/(Explorer)/Pagination/PaginationContext.ts";
+import useFolderTree from "../../_middleware/folderTree/useFolderTree.ts";
+import {useDriverInfo} from "../../_lib/driverInfo/DriverInfoContext.ts";
 
 export default function ViewHeader() {
     const { selected, clear } = useSelected();
     const { changeModal } = useModals();
+
+    const pageRefresh = usePagination().refresh;
+    const folderTreeRefresh = useFolderTree().refresh;
+    const driverInfoRefresh = useDriverInfo().refreshInfo;
+    const [refreshing, setRefreshing] = useState(false);
+
+    const handleRefresh = () => {
+        if (refreshing) return;
+        setRefreshing(true)
+
+        let count = 0;
+
+        const onFinish = () => {
+            count++;
+            if (count == 3) setRefreshing(false);
+        }
+
+        pageRefresh().finally(onFinish);
+        folderTreeRefresh().finally(onFinish);
+        driverInfoRefresh().finally(onFinish);
+    }
 
     return (
         <Paper
@@ -33,8 +60,18 @@ export default function ViewHeader() {
             >
                 <DeleteIcon fontSize={"small"} />
             </IconButton>
-            <IconButton disabled={selected.length === 0}>
+            <IconButton
+                disabled={selected.length === 0}
+                onClick={() => changeModal("move_item")}
+            >
                 <DriveFileMoveIcon fontSize={"small"}/>
+            </IconButton>
+            <IconButton
+                disabled={refreshing}
+                onClick={handleRefresh}
+                className={clsx({"animate-spin": refreshing})}
+            >
+                <CachedIcon fontSize={"small"} />
             </IconButton>
         </Paper>
     );

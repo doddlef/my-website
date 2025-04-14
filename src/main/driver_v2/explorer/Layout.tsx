@@ -18,7 +18,7 @@ export default function Layout() {
                     <ItemPreview>
                         <Modals />
                         <div className={"w-full h-full flex flex-col"}>
-                            <Grid container spacing={2} className={"w-full mt-4"}>
+                            <Grid container spacing={2} className={"w-full"}>
                                 <Grid size={6}>
                                     <BreadcrumbsHeader />
                                 </Grid>
