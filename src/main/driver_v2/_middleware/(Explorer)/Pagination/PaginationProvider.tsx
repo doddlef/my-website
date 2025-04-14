@@ -1,9 +1,9 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import {useSearchParams} from "react-router-dom";
+import {useSearchParams, useNavigate} from "react-router-dom";
 import {useDriverInfo} from "../../../_lib/driverInfo/DriverInfoContext.ts";
 import {ItemView} from "../../../definations.ts";
 import {useContentCache} from "../../ContentCache/ContentCache.ts";
-import {PaginationContext} from "./PaginationContext.ts";
+import {PaginationContext, PaginationInfo} from "./PaginationContext.ts";
 import {contentApi} from "../../../_api/CoreApi.ts";
 import {useUploadApi} from "../../uploadApi2/UploadApiContext.ts";
 import {debounce} from "lodash";
@@ -14,63 +14,59 @@ export default function PaginationProvider({children} : {children: React.ReactNo
     const { refreshInfo } = useDriverInfo();
     const { cachePutItem } = useContentCache();
     const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
 
     const [items, setItems] = useState<ItemView[]>([]);
-    const [hasMore, setHasMore] = useState(true);
-
     const folders = useMemo(() => items.filter(i => i.folder), [items]);
     const files = useMemo(() => items.filter(i => !i.folder), [items]);
 
-    const currentFolder = useMemo(
-        () =>  Number(searchParams.get("folder")) || rootFolder,
-        [searchParams, rootFolder]
-    );
+    const currentFolder = useMemo(() =>  Number(searchParams.get("folder")) || rootFolder,
+        [searchParams, rootFolder]);
 
-    const getContent = useCallback(async (id: number, offset=0, limit=60) => {
-        const result = await contentApi(id, {offset, limit});
-        if (result.code === 0) {
-            result.fields.list
-                .filter(item => item.fileType === "FOLDER")
-                .forEach(item => cachePutItem(item));
-            setItems(result.fields.list);
-            setHasMore(result.fields.hasNext)
-        } else {
-            setItems([]);
-            setHasMore(false);
-        }
-    }, [cachePutItem]);
+    const page = useMemo(() => Number(searchParams.get("page")) || 1, [searchParams]);
 
-    const initContent = useCallback(async (id: number) => {
-        getContent(id).catch(console.error);
-    }, [getContent]);
-
-    const refresh = useCallback(async () => {
-        getContent(currentFolder, 0, items.length < 60 ? 60 : items.length).catch(console.error);
-    }, [currentFolder, getContent, items.length]);
+    const [pagination, setPagination] = useState<PaginationInfo>({
+        hasPrevious: false,
+        hasNext: true,
+        pageCount: 0,
+    });
 
     const isLoading = useRef(false);
-    const loadMore = useCallback(async () => {
-        if (!hasMore || isLoading.current) return;
+    const [loading, setLoading] = useState(false);
+    const refresh = useCallback(async () => {
+        if (isLoading.current) return;
         isLoading.current = true;
+        setLoading(true)
 
-        const result = await contentApi(currentFolder, {offset: items.length, limit: 60});
-        if (result.code === 0) {
-            result.fields.list
-                .filter(item => item.fileType === "FOLDER")
-                .forEach(item => cachePutItem(item));
-            setItems(prev => [...prev, ...result.fields.list]);
-            setHasMore(result.fields.hasNext)
-        } else {
-            setItems([]);
-            setHasMore(false);
+        try {
+            const result = await contentApi(currentFolder, {pageNum: page, pageSize: 80});
+            if (result.code === 0) {
+                result.fields.list
+                    .filter(item => item.fileType === "FOLDER")
+                    .forEach(item => cachePutItem(item));
+                setItems(result.fields.list);
+                setPagination(result.fields.pagination);
+            } else {
+                setItems(result.fields.list);
+                setPagination({hasNext: false, hasPrevious: false, pageCount: 0})
+            }
+        } finally {
+            isLoading.current = false;
+            setLoading(false);
         }
+    }, [cachePutItem, currentFolder, page]);
 
-        isLoading.current = false;
-    }, [cachePutItem, currentFolder, hasMore, items.length]);
+    const changePage = useCallback((newPage: number) => {
+        if (newPage < 1 || newPage > pagination.pageCount) return;
+
+        const params = new URLSearchParams(searchParams);
+        params.set("page", String(newPage));
+        navigate({ search: params.toString() });
+    }, [navigate, pagination.pageCount, searchParams]);
 
     const update = useCallback((id: number, change: Partial<ItemView>) => {
         setItems(prev => prev.map(i => i.id === id ? {...i, ...change } : i));
-    }, [])
+    }, []);
 
     const remove = useCallback((id: number) => {
         setItems(prev => prev.filter(i => i.id !== id));
@@ -78,8 +74,12 @@ export default function PaginationProvider({children} : {children: React.ReactNo
 
     useEffect(() => {
         isLoading.current = false;
-        initContent(currentFolder).catch(console.error);
-    }, [currentFolder, initContent])
+        setLoading(false);
+    }, []);
+
+    useEffect(() => {
+        refresh().catch(console.error);
+    }, [refresh, page]);
 
     useEffect(() => {
         const reportSuccess = debounce((_: string, folder: number) => {
@@ -97,15 +97,10 @@ export default function PaginationProvider({children} : {children: React.ReactNo
     return (
         <PaginationContext.Provider
             value={{
-                currentFolder,
-                items,
-                folders,
-                files,
-                refresh,
-                loadMore,
-                hasMore,
-                update,
-                remove,
+                currentFolder, page, pagination,
+                items, folders, files,
+                refresh, changePage, loading,
+                update, remove,
         }}>
             {children}
         </PaginationContext.Provider>

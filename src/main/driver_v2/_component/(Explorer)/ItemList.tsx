@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import {usePagination} from "../../_middleware/(Explorer)/Pagination/PaginationContext.ts";
@@ -7,9 +7,10 @@ import ListContextMenu from "./Menu/ListContextMenu.tsx";
 import useSelected from "../../_middleware/Selected/SelectedContext.ts";
 import ItemContextMenu from "./Menu/ItemContextMenu.tsx";
 import GridView from "./ListView/GridView.tsx";
+import LoadingHolder from "../Placeholder/LoadingHolder.tsx";
 
 export default function ItemList() {
-    const { folders, files, remove, hasMore, loadMore, currentFolder } = usePagination();
+    const { folders, files, remove, currentFolder, loading } = usePagination();
     const navigate = useNavigate();
     const { clear } = useSelected();
 
@@ -39,27 +40,6 @@ export default function ItemList() {
         setItemMenuEl(anchor);
     }, []);
 
-    const scrollContainerRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const container = scrollContainerRef.current;
-        if (!container) return;
-
-        const onScroll = () => {
-            if (!container) return;
-
-            const { scrollTop, scrollHeight, clientHeight } = container;
-            const isNearBottom = scrollHeight - scrollTop - clientHeight < 200;
-
-            if (isNearBottom && hasMore) {
-                loadMore().catch(console.error);
-            }
-        };
-
-        container.addEventListener("scroll", onScroll);
-        return () => container.removeEventListener("scroll", onScroll);
-    }, [loadMore, hasMore]);
-
     const emptyView = useMemo(() => (
         <div className={"p-4 overflow-x-hidden flex w-full justify-center items-center"}>
             <Typography color={"textSecondary"}>No items yet</Typography>
@@ -72,8 +52,8 @@ export default function ItemList() {
 
     return (
         <Box
-            ref={scrollContainerRef}
-            className={"w-full min-h-full h-full pb-20 overflow-y-auto"}
+            sx={{bgcolor: "background.default"}}
+            className={"w-full min-h-full h-full overflow-y-auto border border-b-0 dark:border-slate-950 rounded-t-xl "}
             onClick={clear}
             onContextMenu={e => {
                 e.preventDefault();
@@ -83,13 +63,18 @@ export default function ItemList() {
             }}
         >
             { folders.length === 0 && files.length === 0 && emptyView }
-            <GridView
-                folders={folders}
-                files={files}
-                navigate={navigate}
-                itemMenu={itemMenu}
-                remove={remove}
-            />
+            {
+                loading
+                    ? <LoadingHolder />
+                    : <GridView
+                        folders={folders}
+                        files={files}
+                        navigate={navigate}
+                        itemMenu={itemMenu}
+                        remove={remove}
+                    />
+            }
+
             <ListContextMenu menuPosition={menuPosition} handleClose={closeContextMenu} />
             <ItemContextMenu open={itemMenuOpen} onClose={handleItemMenuClose} anchorEl={itemMenuEl} navigate={navigate} />
         </Box>

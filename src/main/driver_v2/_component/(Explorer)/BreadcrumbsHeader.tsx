@@ -5,6 +5,7 @@ import {useContentCache} from "../../_middleware/ContentCache/ContentCache.ts";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Link from "@mui/material/Link";
 import {usePagination} from "../../_middleware/(Explorer)/Pagination/PaginationContext.ts";
+import Paper from "@mui/material/Paper";
 
 const BreadcrumbsHeader = () => {
     const [breadcrumbs, setBreadcrumbs] = useState<ItemLabel[]>([])
@@ -18,7 +19,7 @@ const BreadcrumbsHeader = () => {
     }, [currentFolder, getPath]);
 
     return (
-        <div className={"flex-1 pl-4"}>
+        <Paper className={"flex-1 pl-4 p-2"} elevation={2} sx={{borderRadius: 4}}>
             <Breadcrumbs aria-label="breadcrumb">
                 {breadcrumbs.map((b) => (
                     <Link
@@ -31,14 +32,17 @@ const BreadcrumbsHeader = () => {
                             color: b.id === currentFolder ? "text.primary" : "text.secondary",
                             textDecoration: "none",
                             cursor: b.id === currentFolder ? "default" : "pointer",
-                            fontSize: "1.3rem"
+                            fontSize: "1rem",
+                            "&:hover": {
+                                textDecoration: b.id === currentFolder ?  "" : "underline",
+                            }
                         }}
                     >
                         {b.name}
                     </Link>
                 ))}
             </Breadcrumbs>
-        </div>
+        </Paper>
     );
 }
 

@@ -5,8 +5,10 @@ import BreadcrumbsHeader from "../_component/(Explorer)/BreadcrumbsHeader.tsx";
 import ItemList from "../_component/(Explorer)/ItemList.tsx";
 import ModalsProvider from "../_middleware/useModals/ModalsProvider.tsx";
 import ItemPreview from "../_component/(Explorer)/preview/Previews.tsx";
-import ViewHeader from "../_component/(Explorer)/ViewHeader.tsx";
 import UploadHelperWrapper from "../_component/(Explorer)/UploadHelperWrapper.tsx";
+import PaginationHeader from "../_component/(Explorer)/PaginationHeader.tsx";
+import Grid from "@mui/material/Grid2";
+import ViewHeader from "../_component/(Explorer)/ViewHeader.tsx";
 
 export default function Layout() {
     return (
@@ -16,11 +18,18 @@ export default function Layout() {
                     <ItemPreview>
                         <Modals />
                         <div className={"w-full h-full flex flex-col"}>
-                            <div className={"flex w-full items-center"}>
-                                <BreadcrumbsHeader />
-                                <ViewHeader />
-                            </div>
-                            <div className="flex-1 min-h-0">
+                            <Grid container spacing={2} className={"w-full mt-4"}>
+                                <Grid size={6}>
+                                    <BreadcrumbsHeader />
+                                </Grid>
+                                <Grid size={3}>
+                                    <ViewHeader />
+                                </Grid>
+                                <Grid size={3}>
+                                    <PaginationHeader />
+                                </Grid>
+                            </Grid>
+                            <div className="flex-1 min-h-0 mt-4">
                                 <ItemList />
                             </div>
                         </div>

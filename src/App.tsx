@@ -7,6 +7,7 @@ import UploadApiProvider from "./main/driver_v2/_middleware/uploadApi2/UploadApi
 import FileCacheProvider from "./main/driver_v2/_middleware/fileCache/FileCacheProvider.tsx";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
+import "./_fonts/sour_gummy.css";
 
 const theme = createTheme({
   colorSchemes: {

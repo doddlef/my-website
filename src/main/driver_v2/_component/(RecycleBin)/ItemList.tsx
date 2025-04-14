@@ -9,6 +9,7 @@ import Typography from "@mui/material/Typography";
 import useSelected from "../../_middleware/Selected/SelectedContext.ts";
 import RecycleMenu from "./RecycleMenu.tsx";
 import ObjectWrapper from "./ObjectWrapper.tsx";
+import Box from "@mui/material/Box";
 
 dayjs.extend(isToday);
 dayjs.extend(isYesterday);
@@ -47,8 +48,9 @@ export default function ItemList() {
     }, [])
 
     return (
-        <div
-            className={"w-full min-h-full"}
+        <Box
+            sx={{bgcolor: "background.default"}}
+            className={"w-full min-h-full h-full overflow-y-auto border border-b-0 dark:border-slate-950 rounded-t-xl "}
             onClick={(e) => {
                 e.stopPropagation();
                 clear();
@@ -79,6 +81,6 @@ export default function ItemList() {
                     ))}
                 <RecycleMenu open={itemMenuOpen} onClose={handleItemMenuClose} anchorEl={itemMenuEl} />
             </Grid>
-        </div>
+        </Box>
     );
 }

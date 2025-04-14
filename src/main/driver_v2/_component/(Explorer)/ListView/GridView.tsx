@@ -19,7 +19,7 @@ export default function GridView({ folders, files, navigate, itemMenu, remove }:
     const { add } = useSelected();
 
     return (
-        <Grid className="p-4 overflow-x-hidden" container spacing={3}>
+        <Grid className="p-4 pb-24 overflow-x-hidden" container spacing={3}>
             {folders.length > 0 && (
                 <Grid size={12}>
                     <div className={"flex gap-2 items-center justify-between"}>

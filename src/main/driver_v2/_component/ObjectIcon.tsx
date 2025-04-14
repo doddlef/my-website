@@ -53,6 +53,7 @@ export default function ObjectIcon({
             component="div"
             tabIndex={0}
             role="button"
+            elevation={4}
             sx={{
                 borderRadius: 2,
                 bgcolor: "background.default",

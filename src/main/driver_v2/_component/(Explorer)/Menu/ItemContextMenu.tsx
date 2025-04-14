@@ -43,7 +43,7 @@ export default function ItemContextMenu({open, onClose, anchorEl, navigate}: Ite
         if (!firstItem) return;
 
         const currentFolder = await getLabel(firstItem.folderId);
-        if (!currentFolder) return;
+        if (!currentFolder || !currentFolder.folderId) return;
 
         moveItems([firstItem.id], currentFolder.folderId)
             .then(r => {

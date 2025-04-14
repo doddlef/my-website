@@ -1,6 +1,7 @@
 import {R} from "../../../_lib/definitions.ts";
 import {DriverInfo, ItemView} from "../definations.ts";
 import {refreshableRequest} from "../../../_lib/actions.ts";
+import {PaginationInfo} from "../_middleware/(Explorer)/Pagination/PaginationContext.ts";
 
 type DriverInfoResponse = R & {
     fields: {
@@ -25,8 +26,8 @@ export const itemApi = async (id: number): Promise<ItemApiResult> => {
 };
 
 export type ContentSearchParams = {
-    offset?: number;
-    limit?: number;
+    pageNum?: number;
+    pageSize?: number;
     sortBy?: "name" | "size" | "editedAt";
     direction?: "ASC" | "DESC";
 };
@@ -34,7 +35,7 @@ export type ContentSearchParams = {
 type ContentApiResult = R & {
     fields: {
         list: ItemView[];
-        hasNext: boolean;
+        pagination: PaginationInfo;
     };
 };
 
