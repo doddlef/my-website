@@ -1,17 +1,10 @@
-import {lazy, useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {DriverInfo} from "./definations.ts";
 import {useAccount} from "../../_component/accountProvider/AccountContext.tsx";
 import {getDriverInfo} from "./_api/CoreApi.ts";
-import {DriverInfoContext} from "./_lib/driverInfo/DriverInfoContext.ts";
-import Box from "@mui/material/Box";
-import NavHeader from "./_component/NavHeader.tsx";
-import NavSideBar from "./_component/NavSideBar/NavSiderBar.tsx";
-import {Route, Routes} from "react-router-dom";
-import {ViewStateProvider} from "./_middleware/viewState/ViewStateProvider.tsx";
-import FolderTreeProvider from "./_middleware/folderTree/FolderTreeProvider.tsx";
-
-const Explorer = lazy(() => import("./explorer/Layout.tsx"));
-const RecycleBin = lazy(() => import("./recycleBin/Layout.tsx"));
+import {DriverInfoContext} from "./_middleware/driverInfo/DriverInfoContext.ts";
+import FolderTreeProvider from "./_middleware/folderTree/FolderTreeProvider2.tsx";
+import Page from "./Page.tsx";
 
 export default function Layout() {
     const [info, setInfo] = useState<DriverInfo | null>(null);
@@ -34,6 +27,10 @@ export default function Layout() {
         }
     }, [account, checked, refreshInfo]);
 
+    useEffect(() => {
+        console.log("layout");
+    }, []);
+
     if (!mounted) {
         return <div>Loading ...</div>
     }
@@ -45,23 +42,7 @@ export default function Layout() {
     return (
         <DriverInfoContext.Provider value={{ info, refreshInfo }}>
             <FolderTreeProvider>
-                <ViewStateProvider>
-                    <Box
-                        sx={{color: "text.primary"}}
-                        className={"w-screen h-screen flex max-h-screen bg-gray-50 dark:bg-gray-800"}
-                    >
-                        <NavSideBar />
-                        <Box className={"flex-1 h-screen flex flex-col"}>
-                            <NavHeader />
-                            <div className={"w-full flex-1 p-4 pb-0 overflow-hidden"}>
-                                <Routes>
-                                    <Route index element={<Explorer/>} />
-                                    <Route path={"/bin"} element={<RecycleBin />} />
-                                </Routes>
-                            </div>
-                        </Box>
-                    </Box>
-                </ViewStateProvider>
+                <Page />
             </FolderTreeProvider>
         </DriverInfoContext.Provider>
     )

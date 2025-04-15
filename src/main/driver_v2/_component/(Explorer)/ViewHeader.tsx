@@ -12,7 +12,7 @@ import {useState} from "react";
 import {clsx} from "clsx";
 import {usePagination} from "../../_middleware/(Explorer)/Pagination/PaginationContext.ts";
 import useFolderTree from "../../_middleware/folderTree/useFolderTree.ts";
-import {useDriverInfo} from "../../_lib/driverInfo/DriverInfoContext.ts";
+import {useDriverInfo} from "../../_middleware/driverInfo/DriverInfoContext.ts";
 
 export default function ViewHeader() {
     const { selected, clear } = useSelected();

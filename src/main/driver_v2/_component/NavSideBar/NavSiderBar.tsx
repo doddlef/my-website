@@ -27,8 +27,8 @@ export default function NavSideBar() {
             className={"h-ful overflow-auto"}
             divider={<Divider />}
         >
-            <div className={"w-full p-4 flex flex-col gap-1 items-center"}>
-                <img src={"/icon/cloud.svg"} className={"w-1/2"} alt={""}/>
+            <div className={"w-full p-4 flex gap-1 items-center justify-around"}>
+                <img src={"/icon/cloud.svg"} className={"h-12"} alt={""}/>
                 <Typography variant={"h6"} color={"primary"}>
                     Cloud Drive(r)
                 </Typography>

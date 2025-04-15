@@ -8,7 +8,7 @@ import Button from "@mui/material/Button";
 import {deleteItems} from "../../../_api/CoreApi.ts";
 import {enqueueSnackbar} from "notistack";
 import {usePagination} from "../../../_middleware/(Explorer)/Pagination/PaginationContext.ts";
-import {useDriverInfo} from "../../../_lib/driverInfo/DriverInfoContext.ts";
+import {useDriverInfo} from "../../../_middleware/driverInfo/DriverInfoContext.ts";
 
 type DeleteDialogProps = {
     open: boolean;
@@ -17,7 +17,7 @@ type DeleteDialogProps = {
 
 export default function DeleteItemDialog({open, handleClose}: DeleteDialogProps) {
     const { selected, clear } = useSelected();
-    const { refresh } = usePagination();
+    const { refresh, currentFolder } = usePagination();
     const { refreshInfo } = useDriverInfo();
 
     const handleDelete = () => {
@@ -27,8 +27,9 @@ export default function DeleteItemDialog({open, handleClose}: DeleteDialogProps)
                 if (r.code === 0) {
                     enqueueSnackbar(r.message, {variant: "success"});
                     clear();
-                    refresh();
-                    refreshInfo();
+                    if (selected.some(i => i.folderId === currentFolder))
+                        refresh().catch(console.error);
+                    refreshInfo().catch(console.error);
                 } else {
                     enqueueSnackbar(r.message, {variant: "error"});
                 }
@@ -39,6 +40,7 @@ export default function DeleteItemDialog({open, handleClose}: DeleteDialogProps)
 
     return (
         <Dialog
+            keepMounted={false}
             open={open} onClose={handleClose}
             sx={{"& .MuiPaper-root": {padding: 1}}}
         >

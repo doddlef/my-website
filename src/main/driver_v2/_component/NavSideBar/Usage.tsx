@@ -1,4 +1,4 @@
-import {useDriverInfo} from "../../_lib/driverInfo/DriverInfoContext.ts";
+import {useDriverInfo} from "../../_middleware/driverInfo/DriverInfoContext.ts";
 import {useMemo} from "react";
 import {formatFileSize} from "../../_lib/utils.ts";
 import LinearProgress from "@mui/material/LinearProgress";

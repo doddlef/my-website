@@ -45,7 +45,7 @@ export default function CreateFolderDialog({open, handleClose}: CreateFolderDial
                     enqueueSnackbar("create successfully.", {
                         variant: "success",
                     });
-                    refresh();
+                    refresh().catch(console.error);
                     onClose();
                 } else {
                     enqueueSnackbar(r.message, {
@@ -57,6 +57,7 @@ export default function CreateFolderDialog({open, handleClose}: CreateFolderDial
 
     return (
         <Dialog
+            keepMounted={false}
             open={open}
             onClose={onClose}
             sx={{"& .MuiPaper-root": {width: 320}}}

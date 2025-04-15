@@ -7,6 +7,7 @@ import ObjectIcon from "../ObjectIcon.tsx";
 import {useDrag, useDrop} from "react-dnd";
 import {moveItems} from "../../_api/CoreApi.ts";
 import {enqueueSnackbar} from "notistack";
+import useFolderTree from "../../_middleware/folderTree/useFolderTree.ts";
 
 const DRAG_TYPE = "ITEM_WRAPPER";
 
@@ -25,6 +26,7 @@ type ObjectIconProps = {
 export default function ObjectWrapper({ item, navigate, itemMenu, removeItem }: ObjectIconProps) {
     const { selected, select, add, deselect, clear } = useSelected();
     const { previewFile } = useItemPreview();
+    const { update } = useFolderTree();
     const isSelected = useMemo(() => selected.some(i => i.id === item.id), [item.id, selected]);
 
     const handleClick = (e: React.MouseEvent) => {
@@ -63,6 +65,7 @@ export default function ObjectWrapper({ item, navigate, itemMenu, removeItem }: 
             .then(r => {
                 if (r.code === 0) {
                     enqueueSnackbar(r.message, {variant: "success"});
+                    update(children, {folderId: folder});
                     removeItem(children);
                 } else {
                     enqueueSnackbar(r.message, {variant: "error"});

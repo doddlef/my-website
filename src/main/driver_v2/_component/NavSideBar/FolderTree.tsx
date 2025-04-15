@@ -1,22 +1,18 @@
 import useFolderTree from "../../_middleware/folderTree/useFolderTree.ts";
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import {useCallback, useMemo, useState} from "react";
 import {buildFolderTree} from "./buildFolderTree.ts";
 import Box from "@mui/material/Box";
 import {RichTreeView} from "@mui/x-tree-view";
 import {useNavigate} from "react-router-dom";
-import {useDriverInfo} from "../../_lib/driverInfo/DriverInfoContext.ts";
 
 export default function FolderTree() {
-    const { rootFolder } = useDriverInfo().info;
     const { cache } = useFolderTree();
-    const items = useMemo(() => buildFolderTree(cache), [cache]);
+
+    const items = useMemo(() =>  buildFolderTree(cache), [cache]);
+
     const navigate = useNavigate();
 
-    const [selected, setSelected] = useState<string>('');
-
-    useEffect(() => {
-        if(rootFolder) setSelected(rootFolder.toString());
-    }, [rootFolder]);
+    const [selected, setSelected] = useState<string | null>(null);
 
     const handleSelect = useCallback((_: unknown ,itemId: string | null) => {
         if (!itemId) return;
@@ -34,7 +30,17 @@ export default function FolderTree() {
             <RichTreeView
                 selectedItems={selected}
                 items={items}
-                onSelectedItemsChange={handleSelect}
+                expansionTrigger={"iconContainer"}
+                onItemClick={(_: unknown, itemId: string | null) => {
+                    console.log("item clicked", itemId);
+                }}
+                onItemFocus={(_: unknown , itemId: string | null) => {
+                    console.log("item focus", itemId);
+                }}
+                onSelectedItemsChange={(_: unknown ,itemId: string | null) => {
+                    console.log("selectedItems changed", itemId);
+                    setSelected(itemId);
+                }}
             />
         </Box>
     );

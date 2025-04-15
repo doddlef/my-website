@@ -6,28 +6,29 @@ import Link from "@mui/material/Link";
 import {usePagination} from "../../_middleware/(Explorer)/Pagination/PaginationContext.ts";
 import Paper from "@mui/material/Paper";
 import useFolderTree from "../../_middleware/folderTree/useFolderTree.ts";
-import {useDriverInfo} from "../../_lib/driverInfo/DriverInfoContext.ts";
+import {useDriverInfo} from "../../_middleware/driverInfo/DriverInfoContext.ts";
 
 const BreadcrumbsHeader = () => {
     const [breadcrumbs, setBreadcrumbs] = useState<ItemLabel[]>([])
     const navigate = useNavigate();
     const { rootFolder } = useDriverInfo().info;
     const { currentFolder } = usePagination();
-    const { getPath } = useFolderTree();
+    const { getPath, mounted } = useFolderTree();
 
     useEffect(() => {
-        getPath(currentFolder)
-            .then(folders =>
-                folders.map(folder => ({
-                    id: folder.id,
-                    name: folder.name,
-                    url: folder.id === rootFolder ? "/driver" : `/driver?folder=${folder.id}`,
-                    type: "FOLDER",
-                    folderId: folder.folderId,
-                } as ItemLabel)))
-            .then(setBreadcrumbs)
-
-    }, [currentFolder, getPath, rootFolder]);
+        if (mounted) {
+            getPath(currentFolder)
+                .then(folders =>
+                    folders.map(folder => ({
+                        id: folder.id,
+                        name: folder.name,
+                        url: folder.id === rootFolder ? "/driver" : `/driver?folder=${folder.id}`,
+                        type: "FOLDER",
+                        folderId: folder.folderId,
+                    } as ItemLabel)))
+                .then(setBreadcrumbs)
+        }
+    }, [currentFolder, getPath, rootFolder, mounted]);
 
     return (
         <Paper className={"flex-1 pl-4 p-2"} elevation={2} sx={{borderRadius: 4}}>

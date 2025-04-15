@@ -22,6 +22,7 @@ import {enqueueSnackbar} from "notistack";
 import React from "react";
 import {usePagination} from "../../../_middleware/(Explorer)/Pagination/PaginationContext.ts";
 import useFolderTree from "../../../_middleware/folderTree/useFolderTree.ts";
+import {useDriverInfo} from "../../../_middleware/driverInfo/DriverInfoContext.ts";
 
 type ItemEditMenuProps = {
     open: boolean;
@@ -34,9 +35,10 @@ export default function ItemContextMenu({open, onClose, anchorEl, navigate}: Ite
     const { changeModal } = useModals();
     const { previewFile } = useItemPreview();
     const { clear, firstItem } = useSelected();
-    const { getLabel } = useFolderTree();
-    const { remove } = usePagination();
-    const { update } = useFolderTree();
+    const { getLabel, update } = useFolderTree();
+    const { remove, currentFolder } = usePagination();
+    const { rootFolder } = useDriverInfo().info;
+
 
     const handleMoveToParent = async (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -130,10 +132,14 @@ export default function ItemContextMenu({open, onClose, anchorEl, navigate}: Ite
                             cba
                         </Typography>
                     </MenuItem>
-                    <MenuItem onClick={handleMoveToParent}>
-                        <ListItemIcon><ArrowCircleUpIcon /></ListItemIcon>
-                        <ListItemText>move to parent</ListItemText>
-                    </MenuItem>
+                    {
+                        currentFolder !== rootFolder && (
+                            <MenuItem onClick={handleMoveToParent}>
+                                <ListItemIcon><ArrowCircleUpIcon /></ListItemIcon>
+                                <ListItemText>move to parent</ListItemText>
+                            </MenuItem>
+                        )
+                    }
                     <MenuItem onClick={handleDelete}>
                         <ListItemIcon>
                             <DeleteIcon />

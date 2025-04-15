@@ -21,10 +21,10 @@ interface MoveItemDialogProps {
 
 export default function MoveItemModel({open, handleClose}: MoveItemDialogProps) {
     const { currentFolder, refresh } = usePagination();
-    const { getPath, update } = useFolderTree();
+    const { getPath, batchUpdate } = useFolderTree();
     const { selected, clear } = useSelected();
 
-    const [chosenFolder, setChosenFolder] = useState<number>(currentFolder);
+    const [chosenFolder, setChosenFolder] = useState<number | null>(null);
     const [path, setPath] = useState<FolderLabel[]>([]);
 
     const [items, setItems] = useState<ItemView[]>([]);
@@ -34,6 +34,8 @@ export default function MoveItemModel({open, handleClose}: MoveItemDialogProps) 
     }, [currentFolder, open]);
 
     useEffect(() => {
+        if (!chosenFolder) return;
+
         getPath(chosenFolder).then(setPath);
         contentApi(chosenFolder, {pageNum: 1, pageSize: 100})
             .then(r => {
@@ -48,14 +50,16 @@ export default function MoveItemModel({open, handleClose}: MoveItemDialogProps) 
 
     const handleMove = () => {
         const ids = selected.map(item => item.id);
-        if (ids.length < 1) return;
+        if (ids.length < 1 || !chosenFolder) return;
 
         moveItems(ids, chosenFolder)
             .then(r => {
                 if (r.code === 0) {
                     enqueueSnackbar(r.message, {variant: "success"});
                     refresh().catch(console.error);
-                    ids.forEach(id => update(id, {folderId: chosenFolder}));
+                    batchUpdate(
+                        ids.map(id => ({id: id, changes: {folderId: chosenFolder}}))
+                    );
                 } else {
                     enqueueSnackbar(r.message, {variant: "error"});
                 }
@@ -66,6 +70,7 @@ export default function MoveItemModel({open, handleClose}: MoveItemDialogProps) 
 
     return (
         <Dialog
+            keepMounted={false}
             maxWidth={"md"}
             open={open} onClose={handleClose}
             sx={{"& .MuiPaper-root": {borderRadius: 4, padding: 4}}}

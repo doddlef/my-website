@@ -65,8 +65,11 @@ export default function RenameItemDialog({open, handleClose}: RenameDialogProps)
     }, [firstItem, items, name, onClose, update, updateFolderTree])
 
     return (
-        <Dialog open={open} onClose={onClose}
-                sx={{"& .MuiPaper-root": {width: 320}}}
+        <Dialog
+            open={open}
+            onClose={onClose}
+            keepMounted={false}
+            sx={{"& .MuiPaper-root": {width: 320}}}
         >
             <DialogTitle>Rename</DialogTitle>
             <DialogContent>

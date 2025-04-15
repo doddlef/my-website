@@ -6,10 +6,10 @@ import {AnimatePresence} from "motion/react";
 import Transition from "../_component/transition/Transition.tsx";
 import Box from "@mui/material/Box";
 import AuthRoute from "../_component/authRouter/AuthRoute.tsx";
+import DriverWrapper from "./driver_v2/DriverWrapper.tsx";
 
 const Auth = lazy(() => import("./auth/AuthPage.tsx"));
 const Blog = lazy(() => import("./blog/Layout.tsx"));
-const Driver = lazy(() => import("./driver_v2/Layout.tsx"));
 const Home = lazy(() => import("./home/Layout.tsx"));
 const Study = lazy(() => import("./animation/Layout.tsx"));
 
@@ -21,7 +21,7 @@ export default function MainLayout() {
     return (
         <Box className={clsx(isLight ? '' : 'dark')} sx={{bgcolor: "background.default"}}>
             <AnimatePresence mode={"wait"}>
-                <Routes location={location} key={location.pathname}>
+                <Routes location={location}>
                     <Route index element={
                         <Transition>
                             <Home />
@@ -45,7 +45,7 @@ export default function MainLayout() {
                     <Route path={"/driver/*"} element={
                         <AuthRoute>
                             <Transition>
-                                <Driver />
+                                <DriverWrapper />
                             </Transition>
                         </AuthRoute>
                     } />

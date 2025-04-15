@@ -118,19 +118,26 @@ export default function FolderTreeProvider({children}: {children: React.ReactNod
 
     const update = useCallback((id: number, changes: Partial<FolderLabel>) => {
         cacheUpdate(id, changes);
+        console.log("tree update");
         setMap(new Map<number, FolderLabel>(cache.current));
     }, [cacheUpdate]);
 
     const batchUpdate = useCallback((requests: {id: number, changes: Partial<FolderLabel>}[]) => {
         requests.forEach(r => cacheUpdate(r.id, r.changes));
+        console.log("tree update");
         setMap(new Map<number, FolderLabel>(cache.current));
     }, [cacheUpdate])
 
     useEffect(() => {
         if (!mounted) {
-            refresh().catch(console.error).finally(() => setMounted(true));
+            refresh().catch(console.error).finally(() => {
+                console.log("folder tree built");
+                setMounted(true);
+            });
         }
     }, [mounted, refresh]);
+
+    if (!mounted) return <div>building folder tree</div>;
 
     return (
         <FolderTreeContext.Provider value={{getPath, getLabel, refresh, cache: map, update, batchUpdate, mounted}}>

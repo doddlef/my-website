@@ -17,6 +17,8 @@ type FolderTreeContextValue = {
     refresh: () => Promise<void>;
     cache: Map<number, FolderLabel>;
     update: (id: number, changes: Partial<FolderLabel>) => void;
+    batchUpdate: (requests: {id: number, changes: Partial<FolderLabel>}[]) => void;
+    mounted: boolean;
 };
 
 // Create context

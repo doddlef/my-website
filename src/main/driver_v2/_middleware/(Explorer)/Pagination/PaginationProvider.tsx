@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useSearchParams, useNavigate} from "react-router-dom";
-import {useDriverInfo} from "../../../_lib/driverInfo/DriverInfoContext.ts";
+import {useDriverInfo} from "../../driverInfo/DriverInfoContext.ts";
 import {ItemView} from "../../../definations.ts";
 import {PaginationContext, PaginationInfo} from "./PaginationContext.ts";
 import {contentApi} from "../../../_api/CoreApi.ts";

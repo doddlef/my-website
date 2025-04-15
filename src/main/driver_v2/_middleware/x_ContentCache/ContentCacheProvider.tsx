@@ -1,5 +1,5 @@
 import React, {useCallback, useRef} from "react";
-import {useDriverInfo} from "../../_lib/driverInfo/DriverInfoContext.ts";
+import {useDriverInfo} from "../driverInfo/DriverInfoContext.ts";
 import {itemApi} from "../../_api/CoreApi.ts";
 import {ContentCache} from "./ContentCache.ts";
 import {ItemLabel, ItemView} from "../../definations.ts";
