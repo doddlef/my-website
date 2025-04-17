@@ -9,6 +9,7 @@ import {deleteItems} from "../../../_api/CoreApi.ts";
 import {enqueueSnackbar} from "notistack";
 import {usePagination} from "../../../_middleware/(Explorer)/Pagination/PaginationContext.ts";
 import {useDriverInfo} from "../../../_middleware/driverInfo/DriverInfoContext.ts";
+import useFolderTree from "../../../_middleware/folderTree/useFolderTree.ts";
 
 type DeleteDialogProps = {
     open: boolean;
@@ -19,6 +20,7 @@ export default function DeleteItemDialog({open, handleClose}: DeleteDialogProps)
     const { selected, clear } = useSelected();
     const { refresh, currentFolder } = usePagination();
     const { refreshInfo } = useDriverInfo();
+    const { remove } = useFolderTree();
 
     const handleDelete = () => {
         const ids = selected.map(i => i.id);
@@ -26,9 +28,13 @@ export default function DeleteItemDialog({open, handleClose}: DeleteDialogProps)
             .then(r => {
                 if (r.code === 0) {
                     enqueueSnackbar(r.message, {variant: "success"});
-                    clear();
-                    if (selected.some(i => i.folderId === currentFolder))
+                    clear(); // clear selected
+
+                    if (selected.some(i => i.folderId === currentFolder)) {
                         refresh().catch(console.error);
+                        selected.forEach(i => remove(i.id));
+                    }
+
                     refreshInfo().catch(console.error);
                 } else {
                     enqueueSnackbar(r.message, {variant: "error"});

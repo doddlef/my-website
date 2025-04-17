@@ -6,7 +6,7 @@ import DialogContent from "@mui/material/DialogContent";
 import Typography from "@mui/material/Typography";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
-import {deleteForever} from "../../_lib/RecycleApi.ts";
+import {deleteForever} from "../../_api/RecycleApi.ts";
 import useSelected from "../../_middleware/Selected/SelectedContext.ts";
 import useRecycleBin from "../../_middleware/(RecycleBin)/useRecycleBin/useRecycleBin.ts";
 import {enqueueSnackbar} from "notistack";

@@ -6,7 +6,7 @@ import RestoreIcon from '@mui/icons-material/Restore';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import ListItemIcon from "@mui/material/ListItemIcon";
 import useSelected from "../../_middleware/Selected/SelectedContext.ts";
-import {restoreFromTrash} from "../../_lib/RecycleApi.ts";
+import {restoreFromTrash} from "../../_api/RecycleApi.ts";
 import {enqueueSnackbar} from "notistack";
 import useRecycleBin from "../../_middleware/(RecycleBin)/useRecycleBin/useRecycleBin.ts";
 import useModals from "../../_middleware/useModals/ModalsContext.ts";

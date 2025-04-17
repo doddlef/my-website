@@ -3,7 +3,7 @@ import Typography from "@mui/material/Typography";
 import useSelected from "../../_middleware/Selected/SelectedContext.ts";
 import {useCallback} from "react";
 import Paper from "@mui/material/Paper";
-import {restoreFromTrash} from "../../_lib/RecycleApi.ts";
+import {restoreFromTrash} from "../../_api/RecycleApi.ts";
 import {enqueueSnackbar} from "notistack";
 import useRecycleBin from "../../_middleware/(RecycleBin)/useRecycleBin/useRecycleBin.ts";
 import IconButton from "@mui/material/IconButton";
@@ -23,12 +23,13 @@ export default function RecycleHeader() {
             .then(r => {
                 if (r.code === 0) {
                     enqueueSnackbar(r.message, {variant: "success"});
-                    removeItem(ids)
+                    removeItem(ids);
                 } else {
                     enqueueSnackbar(r.message, {variant: "error"});
                 }
+                clear();
             });
-    }, [removeItem, selected]);
+    }, [clear, removeItem, selected]);
 
     const handleDeleteForever = useCallback(() => {
         changeModal("delete_forever");

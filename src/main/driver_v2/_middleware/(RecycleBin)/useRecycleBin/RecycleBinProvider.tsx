@@ -1,7 +1,7 @@
 import {ReactNode, useCallback, useEffect, useState} from "react";
 import {BinItemView} from "../../../definations.ts";
 import { RecycleBinContext } from "./useRecycleBin.ts";
-import {binContent} from "../../../_lib/RecycleApi.ts";
+import {binContent} from "../../../_api/RecycleApi.ts";
 import {enqueueSnackbar} from "notistack";
 
 const RecycleBinProvider = ({ children }: { children: ReactNode }) => {

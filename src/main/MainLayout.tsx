@@ -6,12 +6,12 @@ import {AnimatePresence} from "motion/react";
 import Transition from "../_component/transition/Transition.tsx";
 import Box from "@mui/material/Box";
 import AuthRoute from "../_component/authRouter/AuthRoute.tsx";
-import DriverWrapper from "./driver_v2/DriverWrapper.tsx";
 
 const Auth = lazy(() => import("./auth/AuthPage.tsx"));
 const Blog = lazy(() => import("./blog/Layout.tsx"));
 const Home = lazy(() => import("./home/Layout.tsx"));
 const Study = lazy(() => import("./animation/Layout.tsx"));
+const Drive = lazy(() => import("./driver_v3/Layout.tsx"));
 
 export default function MainLayout() {
     const { mode } = useColorScheme();
@@ -45,7 +45,7 @@ export default function MainLayout() {
                     <Route path={"/driver/*"} element={
                         <AuthRoute>
                             <Transition>
-                                <DriverWrapper />
+                                <Drive />
                             </Transition>
                         </AuthRoute>
                     } />

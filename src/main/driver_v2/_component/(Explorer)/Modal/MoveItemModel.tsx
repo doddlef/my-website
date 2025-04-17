@@ -21,7 +21,7 @@ interface MoveItemDialogProps {
 
 export default function MoveItemModel({open, handleClose}: MoveItemDialogProps) {
     const { currentFolder, refresh } = usePagination();
-    const { getPath, batchUpdate } = useFolderTree();
+    const { getPath, update } = useFolderTree();
     const { selected, clear } = useSelected();
 
     const [chosenFolder, setChosenFolder] = useState<number | null>(null);
@@ -57,9 +57,7 @@ export default function MoveItemModel({open, handleClose}: MoveItemDialogProps) 
                 if (r.code === 0) {
                     enqueueSnackbar(r.message, {variant: "success"});
                     refresh().catch(console.error);
-                    batchUpdate(
-                        ids.map(id => ({id: id, changes: {folderId: chosenFolder}}))
-                    );
+                    ids.forEach(id => update(id, {folderId: chosenFolder}));
                 } else {
                     enqueueSnackbar(r.message, {variant: "error"});
                 }

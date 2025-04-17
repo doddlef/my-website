@@ -10,21 +10,21 @@ export type FolderLabel = {
     children?: number[];
 };
 
-// Context value type
 type FolderTreeContextValue = {
-    getLabel: (id: number) => Promise<FolderLabel | null>;
     getPath: (id: number) => Promise<FolderLabel[]>;
+    getLabel: (id: number) => Promise<FolderLabel | null>;
+    getChildren: (id: number) => FolderLabel[];
     refresh: () => Promise<void>;
     cache: Map<number, FolderLabel>;
-    update: (id: number, changes: Partial<FolderLabel>) => void;
-    batchUpdate: (requests: {id: number, changes: Partial<FolderLabel>}[]) => void;
     mounted: boolean;
+
+    update: (id: number, changes: Partial<FolderLabel>) => void;
+    put: (label: FolderLabel) => void;
+    remove: (id: number) => void;
 };
 
-// Create context
 export const FolderTreeContext = createContext<FolderTreeContextValue | null>(null);
 
-// Hook to use it
 export const useFolderTree = () => {
     const ctx = useContext(FolderTreeContext);
     if (!ctx) throw new Error("useFolderTree must be used inside FolderTreeProvider");

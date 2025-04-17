@@ -14,7 +14,7 @@ import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
 import { enqueueSnackbar } from "notistack";
-import StatusIcon from "../../_component/UploadHelper/StatusIcon.tsx";
+import StatusIcon from "./StatusIcon.tsx";
 import {useUploadApi} from "../../_middleware/uploadApi2/UploadApiContext.ts";
 
 const LINE_HEIGHT = 60;

@@ -1,10 +1,9 @@
-import {R} from "../../../_lib/definitions.ts";
-import {DriverInfo, ItemView} from "../definations.ts";
-import {refreshableRequest} from "../../../_lib/actions.ts";
-import {PaginationInfo} from "../_middleware/(Explorer)/Pagination/PaginationContext.ts";
+import {R} from "../../_lib/definitions.ts";
+import {DriverInfo, FileType, ItemView} from "./definitions.ts";
+import {refreshableRequest} from "../../_lib/actions.ts";
 
 type DriverInfoResponse = R & {
-    fields: {
+    fields?: {
         info: DriverInfo;
     }
 }
@@ -16,36 +15,40 @@ export const getDriverInfo = async () => {
 }
 
 type ItemApiResult = R & {
-    fields: {
+    fields?: {
         item: ItemView;
-    };
-};
+    }
+}
 
 export const itemApi = async (id: number): Promise<ItemApiResult> => {
     return await refreshableRequest(`/api/driver/item/${id}`, { method: "GET" }) as ItemApiResult;
 };
 
 export type ContentSearchParams = {
+    folder?: number;
     pageNum?: number;
     pageSize?: number;
     sortBy?: "name" | "size" | "editedAt";
     direction?: "ASC" | "DESC";
+    fileType?: FileType;
 };
 
 type ContentApiResult = R & {
-    fields: {
+    fields?: {
         list: ItemView[];
-        pagination: PaginationInfo;
-    };
-};
+        pagination: {
+            hasPrevious: boolean;
+            hasNext: boolean;
+            pageCount: number;
+        }
+    }
+}
 
 export const contentApi = async (
-    id: number,
-    params?: ContentSearchParams
+    params: ContentSearchParams
 ): Promise<ContentApiResult> => {
     const searchParams = new URLSearchParams();
 
-    if (id) searchParams.append("folder", id.toString());
     if (params) {
         Object.entries(params).forEach(([key, value]) => {
             if (value !== undefined && value !== null) {
@@ -61,38 +64,6 @@ export const contentApi = async (
     return response as ContentApiResult;
 };
 
-export const renameItem = async (id: number, name: string) => {
-    return await refreshableRequest("/api/driver/rename", {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({id, name})
-    }) as R;
-}
-
-export type CreateFolderResult = R & {
-    fields?: {
-        id: number;
-    }
-}
-
-export const createFolder = async (folder: number, name: string) => {
-    return await refreshableRequest("/api/driver/folder", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({folder, name}),
-    }) as CreateFolderResult;
-}
-
-export const deleteItems = async (ids: number[]): Promise<R> => {
-    const params = new URLSearchParams();
-    ids.forEach(id => params.append("id", id.toString()));
-    return await refreshableRequest(`/api/driver/item?${params}`, { method: "DELETE" }) as R;
-}
-
 export const moveItems = async (items: number[], folder: number) => {
     return await refreshableRequest(`/api/driver/move`, {
         method: "PUT",
@@ -102,3 +73,4 @@ export const moveItems = async (items: number[], folder: number) => {
         body: JSON.stringify({items, folder}),
     }) as R;
 }
+

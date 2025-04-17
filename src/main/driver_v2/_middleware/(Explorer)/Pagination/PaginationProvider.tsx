@@ -6,11 +6,13 @@ import {PaginationContext, PaginationInfo} from "./PaginationContext.ts";
 import {contentApi} from "../../../_api/CoreApi.ts";
 import {useUploadApi} from "../../uploadApi2/UploadApiContext.ts";
 import {debounce} from "lodash";
+import useFolderTree from "../../folderTree/useFolderTree.ts";
 
 export default function PaginationProvider({children} : {children: React.ReactNode}) {
     const { onSuccess } = useUploadApi();
     const { rootFolder } = useDriverInfo().info;
     const { refreshInfo } = useDriverInfo();
+    const { put } = useFolderTree();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
@@ -41,6 +43,9 @@ export default function PaginationProvider({children} : {children: React.ReactNo
             if (result.code === 0) {
                 setItems(result.fields.list);
                 setPagination(result.fields.pagination);
+                result.fields.list
+                    .filter(item => item.folder)
+                    .forEach((item) => put({id: item.id, name: item.name, folderId: item.folderId}))
             } else {
                 setItems(result.fields.list);
                 setPagination({hasNext: false, hasPrevious: false, pageCount: 0})
@@ -49,7 +54,7 @@ export default function PaginationProvider({children} : {children: React.ReactNo
             isLoading.current = false;
             setLoading(false);
         }
-    }, [currentFolder, page]);
+    }, [currentFolder, page, put]);
 
     const changePage = useCallback((newPage: number) => {
         if (newPage < 1 || newPage > pagination.pageCount) return;
@@ -79,7 +84,7 @@ export default function PaginationProvider({children} : {children: React.ReactNo
     useEffect(() => {
         const reportSuccess = debounce((_: string, folder: number) => {
             if (folder === currentFolder) refresh().then(() => console.log("upload refresh"));
-            refreshInfo();
+            refreshInfo().catch(console.error);
         }, 1000);
 
         onSuccess(reportSuccess);
