@@ -60,15 +60,11 @@ function Layout() {
     const loadingRef = useRef(false);
     const [loading, setLoading] = useState(false);
 
-    const lastParams = useRef({ folder: -1, page: -1 });
-
     const refresh = useCallback(async () => {
         if (loadingRef.current) return;
 
         const targetFolder = currentFolder;
         const targetPage = page;
-
-        if (lastParams.current.folder === targetFolder && lastParams.current.page === targetPage) return;
 
         loadingRef.current = true;
         setLoading(true);
@@ -98,7 +94,6 @@ function Layout() {
                 enqueueSnackbar(error.message, { variant: "error" });
             }
         } finally {
-            lastParams.current = { folder: targetFolder, page: targetPage };
             loadingRef.current = false;
             setLoading(false);
         }

@@ -5,8 +5,12 @@ import BreadcrumbHeader from "./_component/BreadcrumbHeader.tsx";
 import EditHeader from "./_component/EditHeader.tsx";
 import PaginationHeader from "./_component/PaginationHeader.tsx";
 import Display from "./_component/Display.tsx";
+import UploadHelper from "../_component/UploadHelper/UploadHelper.tsx";
+import useFolderContent from "./_hooks/useFolderContent.ts";
 
 function Page() {
+    const { currentFolder } = useFolderContent();
+
     return (
         <PreviewWindow>
             <Modals />
@@ -26,6 +30,7 @@ function Page() {
                     <Display />
                 </div>
             </div>
+            <UploadHelper folder={currentFolder} />
         </PreviewWindow>
     );
 }

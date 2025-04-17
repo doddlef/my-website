@@ -38,6 +38,7 @@ function ContextMenu({menuPosition}: ContextMenuProps) {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const handleFileClick = useCallback(() => {
         fileInputRef.current?.click();
+        closeMenu();
     }, []);
     const handleFileChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;

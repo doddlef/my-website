@@ -74,3 +74,29 @@ export const moveItems = async (items: number[], folder: number) => {
     }) as R;
 }
 
+
+export type CreateFolderResult = R & {
+    fields?: {
+        id: number;
+    }
+}
+
+export const createFolder = async (folder: number, name: string) => {
+    return await refreshableRequest("/api/driver/folder", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({folder, name}),
+    }) as CreateFolderResult;
+}
+
+export const renameItem = async (id: number, name: string) => {
+    return await refreshableRequest("/api/driver/rename", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({id, name})
+    }) as R;
+}

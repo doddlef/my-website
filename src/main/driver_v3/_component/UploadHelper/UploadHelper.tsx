@@ -84,11 +84,15 @@ export default function UploadHelper({ folder }: UploadHelperProps) {
                 direction="up"
             />
             <Paper
-                className="w-96 fixed right-8 bottom-8 overflow-hidden z-50"
+                className="w-96 fixed right-8 bottom-8 overflow-hidden z-[100]"
                 sx={{ borderRadius: 2 }}
                 elevation={2}
                 component={motion.div}
                 initial={{
+                    opacity: 0,
+                    y: 400,
+                }}
+                animate={{
                     opacity: detail ? 1 : 0,
                     y: detail ? 0 : 400,
                 }}
@@ -101,7 +105,7 @@ export default function UploadHelper({ folder }: UploadHelperProps) {
                         <CloseOutlinedIcon sx={{ color: "primary.contrastText" }} />
                     </IconButton>
                     <Typography variant="h6" className="flex-1">
-                        Upload Task
+                        Upload Task {detail ? "true" : "false"}
                     </Typography>
                     {uploadAble && (
                         <IconButton onClick={handleClick}>

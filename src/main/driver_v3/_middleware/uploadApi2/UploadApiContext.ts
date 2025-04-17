@@ -14,7 +14,7 @@ export type UploadHistory = {
     progress: number;
 }
 
-export type SuccessListener = (id: string, folder: number) => void;
+export type SuccessListener = (taskId: string, folder: number) => void;
 
 export type UploadApi = {
     upload: (request: UploadRequest) => Promise<void>;
